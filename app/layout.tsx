@@ -3,7 +3,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "DofusTable",
-  description: "Tracker prive d'achat revente Dofus"
+  description: "Tracker prive d'achat revente Dofus",
+  icons: {
+    icon: "/assets/DofusTableIcon.png",
+  },
 };
 
 export const viewport: Viewport = {
