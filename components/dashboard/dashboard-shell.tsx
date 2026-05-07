@@ -11,21 +11,21 @@ type DashboardShellProps = {
 
 export const DashboardShell = ({ transactions, activeView }: DashboardShellProps) => {
   return (
-    <main className="grid h-dvh w-full grid-rows-[1fr_auto] overflow-hidden md:grid-cols-[13rem_1fr] md:grid-rows-1">
+    <main className="grid h-screen w-full min-w-0 grid-rows-[1fr_auto] overflow-hidden md:grid-cols-[minmax(12rem,18rem)_1fr] md:grid-rows-1">
       <AppNavigation activeView={activeView} variant="desktop" />
 
-      <section className="grid min-h-0 grid-rows-[auto_1fr] overflow-hidden px-3 py-3 md:px-6 md:py-4">
-        <header className="mb-3 flex items-center justify-between md:mb-4">
+      <section className="grid h-full min-h-0 min-w-0 grid-rows-[auto_1fr] overflow-hidden p-[0.5rem] md:p-[0.75rem_0.75rem_0.5rem]">
+        <header className="mb-[0.25rem] flex items-center justify-between md:mb-[0.5rem]">
           <div>
-            <p className="text-sm font-medium text-kamas md:hidden">DofusTable</p>
-            <h1 className="mt-1 text-xl font-semibold tracking-normal md:text-2xl">
+            <p className="text-[0.75rem] font-medium text-kamas md:hidden">DofusTable</p>
+            <h1 className="text-[1.125rem] font-semibold tracking-normal md:text-[1.25rem]">
               {activeView === "add" ? "Dashboard" : "Tableau"}
             </h1>
           </div>
           <LogoutButton />
         </header>
 
-        <div className="min-h-0 overflow-hidden">
+        <div className="min-h-0 overflow-y-auto overflow-x-hidden">
           {activeView === "add" ? <AddView transactions={transactions} /> : <TableView transactions={transactions} />}
         </div>
       </section>

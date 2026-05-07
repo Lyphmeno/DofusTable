@@ -12,13 +12,13 @@ export const AddView = ({ transactions }: AddViewProps) => {
   const summary = summarizeTransactions(transactions);
 
   return (
-    <div className="grid h-full min-h-0 grid-rows-[auto_1fr] gap-3 overflow-hidden md:gap-4">
-      <section className="grid grid-cols-2 gap-3">
-        <MetricCard label="Benefice en attente" value={<KamasValue value={summary.pendingProfit} />} tone="warning" />
-        <MetricCard label="Benefice reel" value={<KamasValue value={summary.realizedProfit} />} tone="positive" />
+    <div className="grid min-h-full min-w-0 gap-[0.5rem] md:h-full md:grid-rows-[auto_1fr] md:overflow-hidden">
+      <section className="grid min-w-0 grid-cols-1 gap-[0.5rem] md:grid-cols-2">
+        <MetricCard label="Bénéfice en attente" value={<KamasValue value={summary.pendingProfit} />} tone="warning" />
+        <MetricCard label="Bénéfice réel" value={<KamasValue value={summary.realizedProfit} />} tone="positive" />
       </section>
 
-      <section className="min-h-0 overflow-hidden">
+      <section className="min-h-0 md:overflow-hidden">
         <TransactionForm />
       </section>
     </div>

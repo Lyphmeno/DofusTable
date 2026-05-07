@@ -33,18 +33,18 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
   return (
     <nav
       className={cn(
-        variant === "mobile" && "mx-auto grid w-full max-w-xs grid-cols-2 gap-2 border-t border-line bg-ink px-3 py-2 md:hidden",
-        variant === "desktop" && "hidden h-dvh border-r border-line bg-panel/70 p-4 md:flex md:flex-col"
+        variant === "mobile" && "mx-auto w-full max-w-[min(100%,18rem)] border-t border-line bg-ink p-[0.5rem] md:hidden",
+        variant === "desktop" && "hidden h-full min-w-0 border-r border-line bg-panel/70 p-[1rem] md:flex md:flex-col"
       )}
     >
       {variant === "desktop" ? (
-        <div className="mb-8">
-          <p className="text-sm font-medium text-kamas">DofusTable</p>
-          <p className="mt-1 text-xs text-slate-400">Tracker prive</p>
+        <div className="mb-[2rem]">
+          <p className="text-[0.875rem] font-medium text-kamas">DofusTable</p>
+          <p className="mt-[0.25rem] text-[0.75rem] text-slate-400">Tracker prive</p>
         </div>
       ) : null}
 
-      <div className={cn(variant === "desktop" && "space-y-2")}>
+      <div className={cn(variant === "mobile" && "grid grid-cols-2 gap-[0.5rem]", variant === "desktop" && "space-y-[0.5rem]")}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeView === item.view;
@@ -52,8 +52,8 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
           return (
             <Link
               className={cn(
-                "flex items-center justify-center gap-2 rounded-md border px-3 py-3 text-sm font-medium",
-                variant === "mobile" && "px-2 py-2 text-xs",
+                "flex items-center justify-center gap-[0.5rem] rounded-[0.65rem] border p-[0.65rem] text-[0.875rem] font-medium",
+                variant === "mobile" && "p-[0.5rem] text-[0.75rem]",
                 variant === "desktop" && "justify-start",
                 isActive
                   ? "border-mint bg-mint text-ink"
