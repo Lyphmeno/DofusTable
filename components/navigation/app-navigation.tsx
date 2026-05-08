@@ -39,8 +39,7 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
     >
       {variant === "desktop" ? (
         <div className="mb-[2rem]">
-          <p className="text-[0.875rem] font-medium text-primary">DofusTable</p>
-          <p className="mt-[0.25rem] text-[0.75rem] text-muted">Tracker prive</p>
+          <p className="text-[0.875rem] font-medium text-primary">Lyphus</p>
         </div>
       ) : null}
 

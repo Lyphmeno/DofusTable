@@ -17,7 +17,7 @@ export const DashboardShell = ({ transactions, activeView }: DashboardShellProps
       <section className="grid h-full min-h-0 min-w-0 grid-rows-[auto_1fr] overflow-hidden p-[0.5rem] md:p-[0.75rem_0.75rem_0.5rem]">
         <header className="mb-[0.25rem] flex items-center justify-between md:mb-[0.5rem]">
           <div>
-            <p className="text-[0.75rem] font-medium text-primary md:hidden">DofusTable</p>
+            <p className="text-[0.75rem] font-medium text-primary md:hidden">Lyphus</p>
             <h1 className="text-[1.125rem] font-semibold tracking-normal md:text-[1.25rem]">
               {activeView === "add" ? "Dashboard" : "Tableau"}
             </h1>

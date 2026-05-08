@@ -1,4 +1,4 @@
-# DofusTable
+# Lyphus
 ## À propos
 
 Un simple outil pour tracker vos achats et reventes sur Dofus.
@@ -7,7 +7,3 @@ Un simple outil pour tracker vos achats et reventes sur Dofus.
 - Voir vos marges et profits
 - Historique de vos échanges
 - Interface simple et rapide
-
-
-
-

@@ -40,7 +40,7 @@ export const LoginForm = ({ error }: LoginFormProps) => {
   return (
     <form className="rounded-lg border border-border bg-surface p-4 shadow-soft" onSubmit={handleSubmit}>
       <div>
-        <p className="text-sm font-medium text-primary">DofusTable</p>
+        <p className="text-sm font-medium text-primary">Lyphus</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-normal">Connexion privee</h1>
         <p className="mt-2 text-sm leading-6 text-muted">
           Entre ton email autorise pour recevoir un lien de connexion.
