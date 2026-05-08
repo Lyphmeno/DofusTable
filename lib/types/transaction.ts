@@ -11,7 +11,9 @@ export type TransactionStatus = "selling" | "sold" | "unsold";
 export type Transaction = {
   id: string;
   userId: string;
+  itemId: number | null;
   itemName: string;
+  itemIconUrl: string | null;
   quantityBought: number;
   buyPackType: PackType;
   buyPackPrice: number;
@@ -25,7 +27,9 @@ export type Transaction = {
 };
 
 export type TransactionInput = {
+  itemId?: number | null;
   itemName: string;
+  itemIconUrl?: string | null;
   quantityBought: number;
   buyPackType: PackType;
   buyPackPrice: number;

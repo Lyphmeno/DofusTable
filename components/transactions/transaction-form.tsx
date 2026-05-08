@@ -4,8 +4,10 @@ import { Package, Plus, ReceiptText, ShoppingBag, TrendingUp } from "lucide-reac
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { createTransactionAction } from "@/app/actions/transactions";
+import { ItemCombobox } from "@/components/items/item-combobox";
 import { KamasIcon } from "@/components/ui/kamas-icon";
 import { KamasValue } from "@/components/ui/kamas-value";
+import type { DofusItem } from "@/lib/items/dofus-items";
 import { formatKamas } from "@/lib/transactions/calculations";
 import { packSizes, type PackType } from "@/lib/types/transaction";
 
@@ -17,14 +19,6 @@ type FormSectionProps = {
   children: ReactNode;
   icon: ReactNode;
   title: string;
-};
-
-type TextFieldProps = {
-  label: string;
-  name: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  value: string;
 };
 
 type NumberFieldProps = {
@@ -90,23 +84,6 @@ export const FormSection = ({ children, icon, title }: FormSectionProps) => {
   );
 };
 
-export const TextField = ({ label, name, onChange, placeholder, value }: TextFieldProps) => {
-  return (
-    <label className="block">
-      <span className={labelClassName}>{label}</span>
-      <input
-        className={fieldClassName}
-        name={name}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder}
-        required
-        type="text"
-        value={value}
-      />
-    </label>
-  );
-};
-
 export const NumberField = ({ label, min = "0", name, onChange, value }: NumberFieldProps) => {
   return (
     <label className="block">
@@ -162,7 +139,7 @@ export const SummaryRow = ({ label, toneClassName, value }: { label: string; ton
 };
 
 export const TransactionForm = () => {
-  const [itemName, setItemName] = useState("");
+  const [selectedItem, setSelectedItem] = useState<DofusItem | null>(null);
   const [numbers, setNumbers] = useState<Record<NumericFieldName, string>>({
     quantityBought: "1",
     buyPackPrice: "0",
@@ -214,6 +191,9 @@ export const TransactionForm = () => {
 
   return (
     <form action={createTransactionAction} className="rounded-[1rem] border border-border bg-surface p-[0.9rem] shadow-soft">
+      <input name="itemId" type="hidden" value={selectedItem?.id ?? ""} />
+      <input name="itemIconUrl" type="hidden" value={selectedItem?.iconUrl ?? ""} />
+
       <div className="mb-[0.75rem] flex items-center justify-between">
         <div>
           <h2 className="text-[1rem] font-semibold">Nouvel achat</h2>
@@ -225,7 +205,17 @@ export const TransactionForm = () => {
       <div className="grid gap-[0.7rem] lg:grid-cols-2">
         <FormSection icon={<Package size="0.9rem" />} title="Item">
           <div className="grid gap-[0.7rem] sm:grid-cols-[minmax(0,1fr)_22%]">
-            <TextField label="Nom de l'item" name="itemName" onChange={setItemName} placeholder="Ex: Rune Ga Pa" value={itemName} />
+            <ItemCombobox
+              label="Nom de l'item"
+              name="itemName"
+              onQueryChange={(query) => {
+                if (selectedItem && query !== selectedItem.name) {
+                  setSelectedItem(null);
+                }
+              }}
+              onSelect={setSelectedItem}
+              placeholder="Ex: Rune Ga Pa"
+            />
             <NumberField label="Quantite achetee" min="1" name="quantityBought" onChange={handleNumberChange} value={numbers.quantityBought} />
           </div>
         </FormSection>

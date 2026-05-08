@@ -20,13 +20,24 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     accessorKey: "itemName",
     header: "Item",
     cell: ({ row }) => (
-      <div className="min-w-0 truncate" title={row.original.itemName}>
+      <div className="flex min-w-0 items-center gap-2 truncate" title={row.original.itemName}>
+        {row.original.itemIconUrl ? (
+          <img
+            alt=""
+            className="h-5 w-5 shrink-0 rounded-sm object-contain"
+            height={20}
+            loading="lazy"
+            src={row.original.itemIconUrl}
+            width={20}
+          />
+        ) : null}
         <InlineTransactionField
           ariaLabel="Nom de l'item"
           className="w-full truncate"
           field="itemName"
           id={row.original.id}
           value={row.original.itemName}
+          wrapperClassName="min-w-0 flex-1"
         />
       </div>
     ),

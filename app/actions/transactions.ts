@@ -103,7 +103,11 @@ export const updateTransactionFieldAction = async (formData: FormData) => {
     return;
   }
 
-  let patch: Record<string, string | number> = { [column]: nextValue };
+  let patch: Record<string, string | number | null> = { [column]: nextValue };
+
+  if (field === "itemName") {
+    patch = { [column]: nextValue, item_id: null, item_icon_url: null };
+  }
 
   if (field === "status" && (value === "selling" || value === "unsold")) {
     patch = { [column]: nextValue, quantity_sold: 0 };

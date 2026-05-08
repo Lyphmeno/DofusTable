@@ -13,6 +13,22 @@ const getNumber = (formData: FormData, key: string) => {
   return Number.isFinite(value) ? value : 0;
 };
 
+const getOptionalNumber = (formData: FormData, key: string) => {
+  const value = getString(formData, key);
+
+  if (!value) {
+    return null;
+  }
+
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : null;
+};
+
+const getOptionalString = (formData: FormData, key: string) => {
+  const value = getString(formData, key);
+  return value.length > 0 ? value : null;
+};
+
 const getPackType = (formData: FormData, key: string): PackType => {
   const value = getString(formData, key);
   return packTypes.includes(value as PackType) ? (value as PackType) : "unit";
@@ -25,7 +41,9 @@ const getStatus = (formData: FormData): TransactionStatus => {
 
 export const parseTransactionFormData = (formData: FormData): TransactionInput => {
   return {
+    itemId: getOptionalNumber(formData, "itemId"),
     itemName: getString(formData, "itemName"),
+    itemIconUrl: getOptionalString(formData, "itemIconUrl"),
     quantityBought: getNumber(formData, "quantityBought"),
     buyPackType: getPackType(formData, "buyPackType"),
     buyPackPrice: getNumber(formData, "buyPackPrice"),
@@ -40,7 +58,9 @@ export const parseTransactionFormData = (formData: FormData): TransactionInput =
 export const toTransactionInsert = (input: TransactionInput, userId: string) => {
   return {
     user_id: userId,
+    item_id: input.itemId,
     item_name: input.itemName,
+    item_icon_url: input.itemIconUrl,
     quantity_bought: input.quantityBought,
     buy_pack_type: input.buyPackType,
     buy_pack_price: input.buyPackPrice,
@@ -54,7 +74,9 @@ export const toTransactionInsert = (input: TransactionInput, userId: string) => 
 
 export const toTransactionUpdate = (input: TransactionInput) => {
   return {
+    item_id: input.itemId,
     item_name: input.itemName,
+    item_icon_url: input.itemIconUrl,
     quantity_bought: input.quantityBought,
     buy_pack_type: input.buyPackType,
     buy_pack_price: input.buyPackPrice,

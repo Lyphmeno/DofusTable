@@ -11,7 +11,9 @@ create table public.allowed_users (
 create table public.transactions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
+  item_id integer,
   item_name text not null,
+  item_icon_url text,
   quantity_bought integer not null check (quantity_bought >= 0),
   buy_pack_type public.pack_type not null,
   buy_pack_price numeric(14, 2) not null check (buy_pack_price >= 0),

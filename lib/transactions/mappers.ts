@@ -5,7 +5,9 @@ type DatabaseTransactionStatus = TransactionStatus | "stock";
 export type TransactionRow = {
   id: string;
   user_id: string;
+  item_id?: number | null;
   item_name: string;
+  item_icon_url?: string | null;
   quantity_bought: number;
   buy_pack_type: PackType;
   buy_pack_price: number | string;
@@ -24,7 +26,9 @@ export const mapTransactionRow = (row: TransactionRow): Transaction => {
   return {
     id: row.id,
     userId: row.user_id,
+    itemId: row.item_id ?? null,
     itemName: row.item_name,
+    itemIconUrl: row.item_icon_url ?? null,
     quantityBought: row.quantity_bought,
     buyPackType: row.buy_pack_type,
     buyPackPrice: Number(row.buy_pack_price),
