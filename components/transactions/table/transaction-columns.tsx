@@ -18,25 +18,18 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     accessorKey: "itemName",
     header: "Item",
     cell: ({ row }) => (
-      <InlineTransactionField
-        ariaLabel="Nom de l'item"
-        className="min-w-[10rem]"
-        field="itemName"
-        id={row.original.id}
-        value={row.original.itemName}
-      />
+      <div className="max-w-[16rem] truncate" title={row.original.itemName}>
+        <InlineTransactionField
+          ariaLabel="Nom de l'item"
+          className="truncate"
+          field="itemName"
+          id={row.original.id}
+          value={row.original.itemName}
+        />
+      </div>
     ),
+    size: 260,
     sortingFn: (a, b) => a.original.itemName.localeCompare(b.original.itemName, "fr-FR")
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Date",
-    cell: ({ row }) => (
-      <span className="block text-center text-xs text-muted-foreground">
-        {createdDateFormatter.format(new Date(row.original.createdAt))}
-      </span>
-    ),
-    sortingFn: (a, b) => new Date(a.original.createdAt).getTime() - new Date(b.original.createdAt).getTime()
   },
   {
     accessorKey: "buyPackType",
@@ -46,16 +39,18 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <InlinePackType ariaLabel="Lot achat" field="buyPackType" id={row.original.id} value={row.original.buyPackType} />
       </div>
     ),
+    size: 86,
     sortingFn: (a, b) => packSizes[a.original.buyPackType] - packSizes[b.original.buyPackType]
   },
   {
     id: "totalBuyPrice",
     header: "Total achat",
     cell: ({ row }) => (
-      <span className="flex justify-center font-medium text-muted-foreground">
+      <span className="flex justify-center font-medium tabular-nums text-muted-foreground">
         <KamasValue value={calculateTransaction(row.original).totalBuyPrice} />
       </span>
     ),
+    size: 128,
     sortingFn: (a, b) => calculateTransaction(a.original).totalBuyPrice - calculateTransaction(b.original).totalBuyPrice
   },
   {
@@ -71,7 +66,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           value={row.original.buyPackPrice}
         />
       </div>
-    )
+    ),
+    size: 110
   },
   {
     accessorKey: "sellPackType",
@@ -81,6 +77,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <InlinePackType ariaLabel="Lot vente" field="sellPackType" id={row.original.id} value={row.original.sellPackType} />
       </div>
     ),
+    size: 86,
     sortingFn: (a, b) => packSizes[a.original.sellPackType] - packSizes[b.original.sellPackType]
   },
   {
@@ -96,21 +93,52 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           value={row.original.sellPackPrice}
         />
       </div>
-    )
+    ),
+    size: 110
   },
   {
     id: "listingTax",
     header: "Taxe",
     cell: ({ row }) => (
-      <span className="flex justify-center font-medium text-muted-foreground">
+      <span className="flex justify-center font-medium tabular-nums text-muted-foreground">
         <KamasValue value={calculateTransaction(row.original).listingTax} />
       </span>
     ),
+    size: 108,
     sortingFn: (a, b) => calculateTransaction(a.original).listingTax - calculateTransaction(b.original).listingTax
   },
   {
     id: "profit",
-    header: "Benef.",
+    header: "Bénéf.",
+    cell: ({ row }) => {
+      const computed = calculateTransaction(row.original);
+      const profitValue = row.original.status === "selling" ? computed.pendingProfit : computed.closedProfit;
+      const profitClass =
+        row.original.status === "selling"
+          ? "font-semibold text-primary"
+          : profitValue >= 0
+            ? "font-semibold text-success"
+            : "font-semibold text-danger";
+
+      return (
+        <span className={cn("flex justify-center tabular-nums", profitClass)}>
+          <KamasValue value={profitValue} />
+        </span>
+      );
+    },
+    size: 120,
+    sortingFn: (a, b) => {
+      const aComputed = calculateTransaction(a.original);
+      const bComputed = calculateTransaction(b.original);
+      const aValue = a.original.status === "selling" ? aComputed.pendingProfit : aComputed.closedProfit;
+      const bValue = b.original.status === "selling" ? bComputed.pendingProfit : bComputed.closedProfit;
+
+      return aValue - bValue;
+    }
+  },
+  {
+    id: "profitRoi",
+    header: "% profit",
     cell: ({ row }) => {
       const computed = calculateTransaction(row.original);
       const profitValue = row.original.status === "selling" ? computed.pendingProfit : computed.closedProfit;
@@ -122,17 +150,14 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
             ? "font-semibold text-success"
             : "font-semibold text-danger";
 
-      return (
-        <span className={cn("flex justify-center", profitClass)}>
-          <KamasValue value={profitValue} /> <span className="mx-1 text-muted-foreground">·</span> {formatPercent(profitRoi)}
-        </span>
-      );
+      return <span className={cn("block text-center tabular-nums", profitClass)}>{formatPercent(profitRoi)}</span>;
     },
+    size: 96,
     sortingFn: (a, b) => {
       const aComputed = calculateTransaction(a.original);
       const bComputed = calculateTransaction(b.original);
-      const aValue = a.original.status === "selling" ? aComputed.pendingProfit : aComputed.closedProfit;
-      const bValue = b.original.status === "selling" ? bComputed.pendingProfit : bComputed.closedProfit;
+      const aValue = a.original.status === "selling" ? aComputed.pendingRoi : aComputed.realizedRoi;
+      const bValue = b.original.status === "selling" ? bComputed.pendingRoi : bComputed.realizedRoi;
 
       return aValue - bValue;
     }
@@ -140,7 +165,19 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "status",
     header: "Statut",
-    cell: ({ row }) => <InlineTransactionStatus id={row.original.id} value={row.original.status} />
+    cell: ({ row }) => <InlineTransactionStatus id={row.original.id} value={row.original.status} />,
+    size: 128
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Date",
+    cell: ({ row }) => (
+      <span className="block text-center text-xs text-muted-foreground">
+        {createdDateFormatter.format(new Date(row.original.createdAt))}
+      </span>
+    ),
+    size: 76,
+    sortingFn: (a, b) => new Date(a.original.createdAt).getTime() - new Date(b.original.createdAt).getTime()
   },
   {
     id: "actions",
@@ -149,6 +186,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
       <div className="flex justify-end">
         <TransactionTableRowActions id={row.original.id} />
       </div>
-    )
+    ),
+    size: 64
   }
 ];

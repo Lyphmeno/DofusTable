@@ -7,7 +7,7 @@ import { InlinePackType, InlineTransactionField, InlineTransactionStatus } from 
 import { KamasValue } from "@/components/ui/kamas-value";
 import { cn } from "@/lib/utils/cn";
 
-type TransactionColumn = "item" | "date" | "buyPack" | "buyPrice" | "sellPack" | "sellPrice" | "tax" | "profit" | "status";
+type TransactionColumn = "item" | "buyPack" | "buyPrice" | "sellPack" | "sellPrice" | "tax" | "profit" | "status" | "date";
 
 type TransactionCardProps = {
   transaction: Transaction;
@@ -41,9 +41,6 @@ export const TransactionCard = ({ highlightedColumn, transaction }: TransactionC
             value={transaction.itemName}
           />
         </DesktopCell>
-        <DesktopCell align="center" column="date" highlightedColumn={highlightedColumn}>
-          <span className="text-xs text-muted">{createdDate}</span>
-        </DesktopCell>
         <DesktopCell align="center" column="buyPack" highlightedColumn={highlightedColumn}>
           <InlinePackType ariaLabel="Lot achat" field="buyPackType" id={transaction.id} value={transaction.buyPackType} />
         </DesktopCell>
@@ -68,6 +65,9 @@ export const TransactionCard = ({ highlightedColumn, transaction }: TransactionC
         </DesktopCell>
         <DesktopCell column="status" highlightedColumn={highlightedColumn}>
           <InlineTransactionStatus id={transaction.id} value={transaction.status} />
+        </DesktopCell>
+        <DesktopCell align="center" column="date" highlightedColumn={highlightedColumn}>
+          <span className="text-xs text-muted">{createdDate}</span>
         </DesktopCell>
         <div className="justify-self-end">
           <DeleteTransactionButton id={transaction.id} />

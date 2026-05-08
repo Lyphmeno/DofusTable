@@ -43,7 +43,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
 
       <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-soft">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[76rem] border-collapse">
+          <table className="w-full min-w-[82rem] table-fixed border-collapse">
             <thead className="bg-surface-soft">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr className="border-b border-border-soft" key={headerGroup.id}>
@@ -53,7 +53,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
 
                     return (
                       <th
-                        className="px-3 py-2 text-left text-xs font-medium uppercase tracking-normal text-muted-foreground"
+                        className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase tracking-normal text-muted-foreground"
                         key={header.id}
                         style={{ width: header.getSize() }}
                       >
@@ -83,7 +83,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
               {table.getRowModel().rows.map((row) => (
                 <tr className="h-12 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60" key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <td className="px-3 py-2 text-sm text-foreground" key={cell.id}>
+                    <td className="whitespace-nowrap px-3 py-2 text-sm text-foreground" key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
