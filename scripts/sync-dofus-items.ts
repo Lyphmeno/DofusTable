@@ -1,24 +1,21 @@
-import { mkdir, rename, writeFile } from "node:fs/promises";
+import { access, mkdir, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { normalizeDofusItems, type DofusItem } from "../lib/items/dofus-items";
 
 type UnknownRecord = Record<string, unknown>;
 
-const DEFAULT_ENDPOINTS = [
-  "https://fr.dofus.dofapi.fr/equipments",
-  "https://fr.dofus.dofapi.fr/weapons",
-  "https://fr.dofus.dofapi.fr/resources",
-  "https://fr.dofus.dofapi.fr/consumables",
-  "https://fr.dofus.dofapi.fr/pets",
-  "https://fr.dofus.dofapi.fr/mounts"
-];
+type DofusDbPage = {
+  data: unknown[];
+  limit: number;
+  skip: number;
+  total: number;
+};
 
+const defaultBaseUrl = "https://api.dofusdb.fr/items";
+const pageSize = Number(process.env.DOFUS_ITEMS_PAGE_SIZE ?? 500);
 const outputPath = process.env.DOFUS_ITEMS_OUTPUT_PATH ?? path.join(process.cwd(), "public", "data", "dofus-items.json");
 const tempOutputPath = `${outputPath}.tmp`;
-const endpoints = (process.env.DOFUS_ITEMS_API_URLS ?? process.env.DOFUS_ITEMS_API_URL)
-  ?.split(",")
-  .map((url) => url.trim())
-  .filter(Boolean) ?? DEFAULT_ENDPOINTS;
+const baseUrl = process.env.DOFUS_ITEMS_API_URL ?? defaultBaseUrl;
 
 const readString = (value: unknown): string | null => {
   if (typeof value === "string" && value.trim().length > 0) {
@@ -41,45 +38,38 @@ const readNumber = (value: unknown): number | null => {
   return null;
 };
 
-const readNestedName = (value: unknown): string | null => {
+const readLocalizedString = (value: unknown): string | null => {
   if (typeof value === "string") {
     return readString(value);
   }
 
   if (value && typeof value === "object") {
     const record = value as UnknownRecord;
-    return readString(record.name) ?? readString(record.fr) ?? readString(record.en);
+    return readString(record.fr) ?? readString(record.en) ?? readString(record.name);
   }
 
   return null;
 };
 
-const getPayloadItems = (payload: unknown): unknown[] => {
-  if (Array.isArray(payload)) {
-    return payload;
+const readItemType = (record: UnknownRecord): string => {
+  const type = record.type;
+
+  if (type && typeof type === "object") {
+    const typeRecord = type as UnknownRecord;
+    return readLocalizedString(typeRecord.name) ?? "Inconnu";
   }
 
-  if (payload && typeof payload === "object") {
-    const record = payload as UnknownRecord;
-    const candidates = [record.data, record.items, record.results];
-    const match = candidates.find(Array.isArray);
-
-    if (match) {
-      return match;
-    }
-  }
-
-  return [];
+  return readLocalizedString(type) ?? "Inconnu";
 };
 
-const normalizeApiItem = (item: unknown): DofusItem | null => {
+const normalizeDofusDbItem = (item: unknown): DofusItem | null => {
   if (!item || typeof item !== "object") {
     return null;
   }
 
   const record = item as UnknownRecord;
-  const id = readNumber(record.id ?? record.ankamaId ?? record.objectId);
-  const name = readNestedName(record.name);
+  const id = readNumber(record.id);
+  const name = readLocalizedString(record.name);
 
   if (id === null || name === null) {
     return null;
@@ -88,54 +78,127 @@ const normalizeApiItem = (item: unknown): DofusItem | null => {
   return {
     id,
     name,
-    type: readNestedName(record.type) ?? readNestedName(record.itemType) ?? "Inconnu",
+    type: readItemType(record),
     level: readNumber(record.level),
-    iconUrl: readString(record.iconUrl) ?? readString(record.imgUrl) ?? readString(record.imageUrl) ?? readString(record.image)
+    iconUrl: readString(record.img)
   };
 };
 
-const fetchEndpointItems = async (url: string): Promise<DofusItem[]> => {
-  const response = await fetch(url, {
-    headers: {
-      accept: "application/json"
-    },
-    signal: AbortSignal.timeout(20_000)
-  });
+const buildPageUrl = (skip: number): string => {
+  const url = new URL(baseUrl);
+  url.searchParams.set("$limit", String(pageSize));
+  url.searchParams.set("$skip", String(skip));
+  return url.toString();
+};
 
-  if (!response.ok) {
-    throw new Error(`${url} returned ${response.status}`);
+const readDofusDbPage = (payload: unknown, url: string): DofusDbPage => {
+  if (!payload || typeof payload !== "object") {
+    throw new Error(`${url} returned an invalid JSON payload`);
   }
 
-  const payload = await response.json();
-  return getPayloadItems(payload).map(normalizeApiItem).filter((item): item is DofusItem => item !== null);
+  const record = payload as UnknownRecord;
+  const data = Array.isArray(record.data) ? record.data : null;
+  const total = readNumber(record.total);
+  const limit = readNumber(record.limit);
+  const skip = readNumber(record.skip);
+
+  if (!data || total === null || limit === null || skip === null) {
+    throw new Error(`${url} returned an unexpected DofusDB page shape`);
+  }
+
+  return {
+    data,
+    total,
+    limit,
+    skip
+  };
+};
+
+const fetchDofusDbPage = async (skip: number): Promise<DofusDbPage> => {
+  const url = buildPageUrl(skip);
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept: "application/json"
+      },
+      signal: AbortSignal.timeout(30_000)
+    });
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => "");
+      throw new Error(`${url} returned ${response.status} ${response.statusText}${body ? `: ${body.slice(0, 300)}` : ""}`);
+    }
+
+    return readDofusDbPage(await response.json(), url);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`${url} failed: ${error.message}`);
+    }
+
+    throw new Error(`${url} failed with an unknown error`);
+  }
+};
+
+const cacheExists = async (): Promise<boolean> => {
+  try {
+    await access(outputPath);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const writeCache = async (items: DofusItem[]) => {
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeFile(tempOutputPath, `${JSON.stringify(items)}\n`, "utf8");
+  await rename(tempOutputPath, outputPath);
 };
 
 const sync = async () => {
-  console.log(`Syncing Dofus items from ${endpoints.length} endpoint(s)...`);
+  console.log(`Syncing Dofus items from DofusDB: ${baseUrl}`);
+  console.log(`Requested page size: ${pageSize}`);
 
-  const results = await Promise.allSettled(endpoints.map(fetchEndpointItems));
-  const items = results.flatMap((result, index) => {
-    const endpoint = endpoints[index];
+  const firstPage = await fetchDofusDbPage(0);
+  const pages: DofusDbPage[] = [firstPage];
+  let fetchedCount = firstPage.data.length;
+  const effectivePageSize = Math.max(firstPage.data.length, 1);
+  const totalPages = Math.ceil(firstPage.total / effectivePageSize);
 
-    if (result.status === "fulfilled") {
-      console.log(`- ${endpoint}: ${result.value.length} item(s)`);
-      return result.value;
+  console.log(`DofusDB reports ${firstPage.total} item(s) across about ${totalPages} page(s).`);
+  console.log(`Effective page size: ${effectivePageSize}`);
+
+  while (fetchedCount < firstPage.total) {
+    const page = await fetchDofusDbPage(fetchedCount);
+    pages.push(page);
+    fetchedCount += page.data.length;
+    console.log(`Fetched ${Math.min(fetchedCount, firstPage.total)} / ${firstPage.total} item(s)...`);
+
+    if (page.data.length === 0) {
+      throw new Error(`DofusDB returned an empty page at skip=${page.skip}. Stopping to avoid an infinite loop.`);
     }
-
-    console.warn(`- ${endpoint}: skipped (${result.reason instanceof Error ? result.reason.message : "unknown error"})`);
-    return [];
-  });
-
-  const normalizedItems = normalizeDofusItems(items);
-
-  if (normalizedItems.length === 0) {
-    throw new Error("No Dofus items were fetched. Cache file was not updated.");
   }
 
-  await mkdir(path.dirname(outputPath), { recursive: true });
-  await writeFile(tempOutputPath, `${JSON.stringify(normalizedItems)}\n`, "utf8");
-  await rename(tempOutputPath, outputPath);
+  const rawItems = pages.flatMap((page) => page.data);
+  const normalizedItems = normalizeDofusItems(
+    rawItems.map(normalizeDofusDbItem).filter((item): item is DofusItem => item !== null)
+  );
 
+  console.log(`Fetched ${rawItems.length} raw item(s).`);
+  console.log(`Normalized ${normalizedItems.length} item(s).`);
+
+  if (normalizedItems.length === 0) {
+    if (await cacheExists()) {
+      console.warn(`No item was normalized. Existing cache preserved at ${outputPath}`);
+      return;
+    }
+
+    await writeCache([]);
+    console.warn(`No item was normalized and no cache existed. Wrote empty cache to ${outputPath}`);
+    return;
+  }
+
+  await writeCache(normalizedItems);
   console.log(`Wrote ${normalizedItems.length} normalized item(s) to ${outputPath}`);
 };
 
