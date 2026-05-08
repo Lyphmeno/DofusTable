@@ -8,6 +8,9 @@ export const config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        proclamate: ["Proclamate", "serif"],
+      },
       colors: {
         background: "rgb(var(--background) / <alpha-value>)",
         foreground: "rgb(var(--foreground) / <alpha-value>)",

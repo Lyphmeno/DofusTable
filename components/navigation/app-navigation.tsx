@@ -39,7 +39,7 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
     >
       {variant === "desktop" ? (
         <div className="mb-[2rem]">
-          <p className="text-[0.875rem] font-medium text-primary">Lyphus</p>
+          <p className="text-[2rem] font-medium text-primary font-proclamate justify-between align-middle">Lyphus</p>
         </div>
       ) : null}
 

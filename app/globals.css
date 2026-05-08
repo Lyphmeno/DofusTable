@@ -104,8 +104,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 @font-face {
-  font-family: "Proclamate";
-  src: url("/fonts/proclamate-light.ttf") format("truetype");
+  font-family: Proclamate;
+  src: url(/fonts/proclamate_light.ttf) format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
