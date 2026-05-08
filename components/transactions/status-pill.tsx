@@ -7,9 +7,9 @@ const statusLabels: Record<TransactionStatus, string> = {
 };
 
 const statusClasses: Record<TransactionStatus, string> = {
-  selling: "bg-kamas/20 text-primary",
-  sold: "bg-mint/20 text-success",
-  unsold: "bg-coral/20 text-danger"
+  selling: "bg-primary/20 text-primary",
+  sold: "bg-success/20 text-success",
+  unsold: "bg-danger/20 text-danger"
 };
 
 type StatusPillProps = {

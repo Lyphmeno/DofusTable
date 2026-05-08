@@ -49,7 +49,7 @@ const packLabels: Record<PackType, string> = {
 };
 
 const fieldClassName =
-  "mt-[0.35rem] w-full rounded-[0.65rem] border border-border bg-background/40 p-[0.62rem] text-[0.95rem] text-slate-50 outline-none transition focus:border-mint focus:bg-surface-soft";
+  "mt-[0.35rem] w-full rounded-[0.65rem] border border-border bg-input p-[0.62rem] text-[0.95rem] text-foreground outline-none transition focus:border-primary focus:bg-surface-soft";
 
 const labelClassName = "text-[0.78rem] font-medium text-muted-foreground";
 
@@ -80,10 +80,10 @@ export const FormSection = ({ children, icon, title }: FormSectionProps) => {
   return (
     <section className="rounded-[0.85rem] border border-border bg-surface-soft/70 p-[0.75rem]">
       <div className="mb-[0.55rem] flex items-center gap-[0.5rem]">
-        <span className="flex h-[1.55rem] w-[1.55rem] items-center justify-center rounded-[0.55rem] bg-mint/10 text-success">
+        <span className="flex h-[1.55rem] w-[1.55rem] items-center justify-center rounded-[0.55rem] bg-success/10 text-success">
           {icon}
         </span>
-        <h3 className="text-[0.9rem] font-semibold text-slate-100">{title}</h3>
+        <h3 className="text-[0.9rem] font-semibold text-foreground">{title}</h3>
       </div>
       {children}
     </section>
@@ -146,17 +146,17 @@ export const PackSelect = ({ label, name, onChange, value }: PackSelectProps) =>
 
 export const UnitPreview = ({ value }: { value: number }) => {
   return (
-    <div className="mt-[0.55rem] rounded-[0.65rem] bg-background/35 p-[0.55rem] text-[0.82rem] font-medium text-muted-foreground">
-      = <span className="tabular-nums text-slate-100">{formatKamas(value)}</span> K / Lot de 1
+    <div className="mt-[0.55rem] rounded-[0.65rem] bg-surface p-[0.55rem] text-[0.82rem] font-medium text-muted-foreground">
+      = <span className="tabular-nums text-foreground">{formatKamas(value)}</span> K / Lot de 1
     </div>
   );
 };
 
 export const SummaryRow = ({ label, toneClassName, value }: { label: string; toneClassName?: string; value: ReactNode }) => {
   return (
-    <div className="flex min-w-0 items-center justify-between gap-[0.75rem] rounded-[0.65rem] bg-background/24 p-[0.55rem]">
+    <div className="flex min-w-0 items-center justify-between gap-[0.75rem] rounded-[0.65rem] bg-surface-soft p-[0.55rem]">
       <span className="min-w-0 text-[0.78rem] text-muted">{label}</span>
-      <span className={`shrink-0 text-right text-[0.88rem] font-semibold tabular-nums ${toneClassName ?? "text-slate-100"}`}>{value}</span>
+      <span className={`shrink-0 text-right text-[0.88rem] font-semibold tabular-nums ${toneClassName ?? "text-foreground"}`}>{value}</span>
     </div>
   );
 };
@@ -258,7 +258,7 @@ export const TransactionForm = () => {
         </FormSection>
       </div>
 
-      <button className="mt-[0.75rem] flex w-full items-center justify-center gap-[0.5rem] rounded-[0.75rem] bg-mint p-[0.7rem] font-semibold text-ink transition hover:bg-mint/90" type="submit">
+      <button className="mt-[0.75rem] flex w-full items-center justify-center gap-[0.5rem] rounded-[0.75rem] bg-primary p-[0.7rem] font-semibold text-primary-foreground transition hover:bg-primary/90" type="submit">
         <Plus size="1.125rem" aria-hidden="true" />
         Ajouter
       </button>

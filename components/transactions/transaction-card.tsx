@@ -41,7 +41,7 @@ export const TransactionCard = ({ highlightedColumn, transaction }: TransactionC
           />
         </DesktopCell>
         <DesktopCell align="center" column="date" highlightedColumn={highlightedColumn}>
-          <span className="text-xs text-slate-500">{createdDate}</span>
+          <span className="text-xs text-muted">{createdDate}</span>
         </DesktopCell>
         <DesktopCell align="center" column="buyPack" highlightedColumn={highlightedColumn}>
           <InlinePackType ariaLabel="Lot achat" field="buyPackType" id={transaction.id} value={transaction.buyPackType} />
@@ -89,7 +89,7 @@ export const DesktopCell = ({ align, children, column, highlightedColumn }: Desk
       className={cn(
         "min-w-0 w-full rounded-md px-2 py-1.5 transition md:py-2",
         align === "center" && "flex justify-center text-center",
-        highlightedColumn === column && "bg-mint/10 ring-1 ring-mint/20"
+        highlightedColumn === column && "bg-success/10 ring-1 ring-success/20"
       )}
     >
       {children}

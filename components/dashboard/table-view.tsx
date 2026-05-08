@@ -122,13 +122,13 @@ export const TableView = ({ transactions }: TableViewProps) => {
 
       <div className="overflow-x-auto pb-2">
         <div className="min-w-[66rem]">
-          <div className="mb-2 grid grid-cols-[minmax(13rem,1.8fr)_0.5fr_0.55fr_0.75fr_0.55fr_0.8fr_0.75fr_1fr_0.9fr_2.5rem] gap-3 px-3 text-[0.68rem] font-medium uppercase tracking-normal text-slate-500 md:mb-3 md:gap-4 md:px-4 md:text-xs">
+          <div className="mb-2 grid grid-cols-[minmax(13rem,1.8fr)_0.5fr_0.55fr_0.75fr_0.55fr_0.8fr_0.75fr_1fr_0.9fr_2.5rem] gap-3 px-3 text-[0.68rem] font-medium uppercase tracking-normal text-muted md:mb-3 md:gap-4 md:px-4 md:text-xs">
             {columns.map((column) => (
               <button
                 className={cn(
                   "rounded-md px-2 py-2 text-left uppercase tracking-normal transition",
                   column.align === "center" && "text-center",
-                  hoveredColumn === column.key && "bg-mint/10 text-slate-100",
+                  hoveredColumn === column.key && "bg-success/10 text-foreground",
                   sort.column === column.key && "text-primary"
                 )}
                 key={column.key}

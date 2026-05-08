@@ -56,7 +56,7 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
                 variant === "mobile" && "p-[0.5rem] text-[0.75rem]",
                 variant === "desktop" && "justify-start",
                 isActive
-                  ? "border-mint bg-mint text-ink"
+                  ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-surface-soft text-muted-foreground"
               )}
               href={item.href}

@@ -44,7 +44,7 @@ export const InlineTransactionField = ({
         <input
           aria-label={ariaLabel}
           className={cn(
-            "min-w-0 rounded-md border border-transparent bg-transparent py-1.5 font-medium text-slate-100 outline-none transition focus:border-mint focus:bg-surface-soft md:py-2",
+            "min-w-0 rounded-md border border-transparent bg-transparent py-1.5 font-medium text-foreground outline-none transition focus:border-primary focus:bg-surface-soft md:py-2",
             kind === "text" && "w-full",
             kind === "number" && "px-2 text-center",
             kind === "kamas" && "px-1 text-center"
@@ -86,7 +86,7 @@ export const InlinePackType = ({ id, field, value, ariaLabel, wrapperClassName }
       <input name="field" type="hidden" value={field} />
       <select
         aria-label={ariaLabel}
-        className="w-[3.8rem] rounded-md border border-border bg-surface-soft px-2 py-1.5 text-xs font-semibold text-slate-100 outline-none focus:border-mint md:w-[4.25rem] md:py-2 md:text-sm"
+        className="w-[3.8rem] rounded-md border border-border bg-surface-soft px-2 py-1.5 text-xs font-semibold text-foreground outline-none focus:border-primary md:w-[4.25rem] md:py-2 md:text-sm"
         defaultValue={value}
         name="value"
         onChange={() => {
@@ -119,7 +119,7 @@ export const InlineTransactionStatus = ({ id, value, wrapperClassName }: InlineT
       <input name="field" type="hidden" value="status" />
       <select
         aria-label="Statut"
-        className="w-full rounded-md border border-border bg-surface-soft px-2 py-1.5 text-xs font-medium text-slate-100 outline-none focus:border-mint md:py-2 md:text-sm"
+        className="w-full rounded-md border border-border bg-surface-soft px-2 py-1.5 text-xs font-medium text-foreground outline-none focus:border-primary md:py-2 md:text-sm"
         defaultValue={value}
         name="value"
         onChange={() => {

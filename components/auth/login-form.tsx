@@ -51,7 +51,7 @@ export const LoginForm = ({ error }: LoginFormProps) => {
         <span className="text-sm text-muted-foreground">Email</span>
         <input
           autoComplete="email"
-          className="mt-2 w-full rounded-md border border-border bg-surface-soft px-3 py-3 text-base outline-none focus:border-mint"
+          className="mt-2 w-full rounded-md border border-border bg-surface-soft px-3 py-3 text-base outline-none focus:border-primary"
           name="email"
           onChange={(event) => setEmail(event.target.value)}
           placeholder="ton.email@example.com"
@@ -61,7 +61,7 @@ export const LoginForm = ({ error }: LoginFormProps) => {
       </label>
 
       <button
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-mint px-4 py-3 font-semibold text-ink disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
         disabled={isSubmitting}
         type="submit"
       >
@@ -70,13 +70,13 @@ export const LoginForm = ({ error }: LoginFormProps) => {
       </button>
 
       {error === "unauthorized" ? (
-        <p className="mt-4 rounded-md border border-coral/40 bg-coral/10 p-3 text-sm text-danger">
+        <p className="mt-4 rounded-md border border-danger/40 bg-danger/10 p-3 text-sm text-danger">
           Cet email n'est pas autorise pour cette application.
         </p>
       ) : null}
 
       {message ? (
-        <p className="mt-4 rounded-md border border-border bg-surface-soft p-3 text-sm text-slate-200">{message}</p>
+        <p className="mt-4 rounded-md border border-border bg-surface-soft p-3 text-sm text-foreground">{message}</p>
       ) : null}
     </form>
   );
