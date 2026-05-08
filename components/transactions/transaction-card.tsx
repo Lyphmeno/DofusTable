@@ -5,8 +5,9 @@ import { calculateTransaction, formatPercent } from "@/lib/transactions/calculat
 import type { Transaction } from "@/lib/types/transaction";
 import { InlinePackType, InlineTransactionField, InlineTransactionStatus } from "@/components/transactions/inline-transaction-field";
 import { KamasValue } from "@/components/ui/kamas-value";
-import type { TransactionColumn } from "@/components/dashboard/table-view";
 import { cn } from "@/lib/utils/cn";
+
+type TransactionColumn = "item" | "date" | "buyPack" | "buyPrice" | "sellPack" | "sellPrice" | "tax" | "profit" | "status";
 
 type TransactionCardProps = {
   transaction: Transaction;
