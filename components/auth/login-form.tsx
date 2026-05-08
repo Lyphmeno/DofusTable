@@ -38,20 +38,20 @@ export const LoginForm = ({ error }: LoginFormProps) => {
   };
 
   return (
-    <form className="rounded-lg border border-line bg-panel p-4 shadow-soft" onSubmit={handleSubmit}>
+    <form className="rounded-lg border border-border bg-surface p-4 shadow-soft" onSubmit={handleSubmit}>
       <div>
-        <p className="text-sm font-medium text-kamas">DofusTable</p>
+        <p className="text-sm font-medium text-primary">DofusTable</p>
         <h1 className="mt-1 text-2xl font-semibold tracking-normal">Connexion privee</h1>
-        <p className="mt-2 text-sm leading-6 text-slate-400">
+        <p className="mt-2 text-sm leading-6 text-muted">
           Entre ton email autorise pour recevoir un lien de connexion.
         </p>
       </div>
 
       <label className="mt-5 block">
-        <span className="text-sm text-slate-300">Email</span>
+        <span className="text-sm text-muted-foreground">Email</span>
         <input
           autoComplete="email"
-          className="mt-2 w-full rounded-md border border-line bg-panelSoft px-3 py-3 text-base outline-none focus:border-mint"
+          className="mt-2 w-full rounded-md border border-border bg-surface-soft px-3 py-3 text-base outline-none focus:border-mint"
           name="email"
           onChange={(event) => setEmail(event.target.value)}
           placeholder="ton.email@example.com"
@@ -70,13 +70,13 @@ export const LoginForm = ({ error }: LoginFormProps) => {
       </button>
 
       {error === "unauthorized" ? (
-        <p className="mt-4 rounded-md border border-coral/40 bg-coral/10 p-3 text-sm text-coral">
+        <p className="mt-4 rounded-md border border-coral/40 bg-coral/10 p-3 text-sm text-danger">
           Cet email n'est pas autorise pour cette application.
         </p>
       ) : null}
 
       {message ? (
-        <p className="mt-4 rounded-md border border-line bg-panelSoft p-3 text-sm text-slate-200">{message}</p>
+        <p className="mt-4 rounded-md border border-border bg-surface-soft p-3 text-sm text-slate-200">{message}</p>
       ) : null}
     </form>
   );

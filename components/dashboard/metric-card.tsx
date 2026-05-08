@@ -9,13 +9,13 @@ type MetricCardProps = {
 
 export const MetricCard = ({ label, value, tone = "neutral" }: MetricCardProps) => {
   return (
-    <section className="rounded-lg border border-line bg-panel p-2 shadow-soft">
-      <p className="text-xs text-slate-400">{label}</p>
+    <section className="rounded-lg border border-border bg-surface p-2 shadow-soft">
+      <p className="text-xs text-muted">{label}</p>
       <p
         className={cn(
           "mt-1 text-lg font-semibold tracking-normal",
-          tone === "positive" && "text-mint",
-          tone === "warning" && "text-kamas"
+          tone === "positive" && "text-success",
+          tone === "warning" && "text-primary"
         )}
       >
         {value}

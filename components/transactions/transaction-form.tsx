@@ -49,9 +49,9 @@ const packLabels: Record<PackType, string> = {
 };
 
 const fieldClassName =
-  "mt-[0.35rem] w-full rounded-[0.65rem] border border-line bg-ink/40 p-[0.62rem] text-[0.95rem] text-slate-50 outline-none transition focus:border-mint focus:bg-panelSoft";
+  "mt-[0.35rem] w-full rounded-[0.65rem] border border-border bg-background/40 p-[0.62rem] text-[0.95rem] text-slate-50 outline-none transition focus:border-mint focus:bg-surface-soft";
 
-const labelClassName = "text-[0.78rem] font-medium text-slate-300";
+const labelClassName = "text-[0.78rem] font-medium text-muted-foreground";
 
 const toNumber = (value: string) => {
   const numberValue = Number(value);
@@ -60,14 +60,14 @@ const toNumber = (value: string) => {
 
 const getToneClassName = (value: number) => {
   if (value > 0) {
-    return "text-mint";
+    return "text-success";
   }
 
   if (value < 0) {
-    return "text-coral";
+    return "text-danger";
   }
 
-  return "text-slate-300";
+  return "text-muted-foreground";
 };
 
 const formatRoi = (value: number) => {
@@ -78,9 +78,9 @@ const formatRoi = (value: number) => {
 
 export const FormSection = ({ children, icon, title }: FormSectionProps) => {
   return (
-    <section className="rounded-[0.85rem] border border-line bg-panelSoft/70 p-[0.75rem]">
+    <section className="rounded-[0.85rem] border border-border bg-surface-soft/70 p-[0.75rem]">
       <div className="mb-[0.55rem] flex items-center gap-[0.5rem]">
-        <span className="flex h-[1.55rem] w-[1.55rem] items-center justify-center rounded-[0.55rem] bg-mint/10 text-mint">
+        <span className="flex h-[1.55rem] w-[1.55rem] items-center justify-center rounded-[0.55rem] bg-mint/10 text-success">
           {icon}
         </span>
         <h3 className="text-[0.9rem] font-semibold text-slate-100">{title}</h3>
@@ -146,7 +146,7 @@ export const PackSelect = ({ label, name, onChange, value }: PackSelectProps) =>
 
 export const UnitPreview = ({ value }: { value: number }) => {
   return (
-    <div className="mt-[0.55rem] rounded-[0.65rem] bg-ink/35 p-[0.55rem] text-[0.82rem] font-medium text-slate-300">
+    <div className="mt-[0.55rem] rounded-[0.65rem] bg-background/35 p-[0.55rem] text-[0.82rem] font-medium text-muted-foreground">
       = <span className="tabular-nums text-slate-100">{formatKamas(value)}</span> K / Lot de 1
     </div>
   );
@@ -154,8 +154,8 @@ export const UnitPreview = ({ value }: { value: number }) => {
 
 export const SummaryRow = ({ label, toneClassName, value }: { label: string; toneClassName?: string; value: ReactNode }) => {
   return (
-    <div className="flex min-w-0 items-center justify-between gap-[0.75rem] rounded-[0.65rem] bg-ink/24 p-[0.55rem]">
-      <span className="min-w-0 text-[0.78rem] text-slate-400">{label}</span>
+    <div className="flex min-w-0 items-center justify-between gap-[0.75rem] rounded-[0.65rem] bg-background/24 p-[0.55rem]">
+      <span className="min-w-0 text-[0.78rem] text-muted">{label}</span>
       <span className={`shrink-0 text-right text-[0.88rem] font-semibold tabular-nums ${toneClassName ?? "text-slate-100"}`}>{value}</span>
     </div>
   );
@@ -213,11 +213,11 @@ export const TransactionForm = () => {
   const profitToneClassName = getToneClassName(preview.profit);
 
   return (
-    <form action={createTransactionAction} className="rounded-[1rem] border border-line bg-panel p-[0.9rem] shadow-soft">
+    <form action={createTransactionAction} className="rounded-[1rem] border border-border bg-surface p-[0.9rem] shadow-soft">
       <div className="mb-[0.75rem] flex items-center justify-between">
         <div>
           <h2 className="text-[1rem] font-semibold">Nouvel achat</h2>
-          <p className="mt-[0.15rem] text-[0.78rem] text-slate-400">Statut initial : en vente</p>
+          <p className="mt-[0.15rem] text-[0.78rem] text-muted">Statut initial : en vente</p>
         </div>
         <KamasIcon className="h-[1.55rem] w-[1.55rem]" />
       </div>

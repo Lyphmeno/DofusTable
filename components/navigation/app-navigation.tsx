@@ -33,14 +33,14 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
   return (
     <nav
       className={cn(
-        variant === "mobile" && "mx-auto w-full max-w-[min(100%,18rem)] border-t border-line bg-ink p-[0.5rem] md:hidden",
-        variant === "desktop" && "hidden h-full min-w-0 border-r border-line bg-panel/70 p-[1rem] md:flex md:flex-col"
+        variant === "mobile" && "mx-auto w-full max-w-[min(100%,18rem)] border-t border-border bg-background p-[0.5rem] md:hidden",
+        variant === "desktop" && "hidden h-full min-w-0 border-r border-border bg-surface/70 p-[1rem] md:flex md:flex-col"
       )}
     >
       {variant === "desktop" ? (
         <div className="mb-[2rem]">
-          <p className="text-[0.875rem] font-medium text-kamas">DofusTable</p>
-          <p className="mt-[0.25rem] text-[0.75rem] text-slate-400">Tracker prive</p>
+          <p className="text-[0.875rem] font-medium text-primary">DofusTable</p>
+          <p className="mt-[0.25rem] text-[0.75rem] text-muted">Tracker prive</p>
         </div>
       ) : null}
 
@@ -57,7 +57,7 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
                 variant === "desktop" && "justify-start",
                 isActive
                   ? "border-mint bg-mint text-ink"
-                  : "border-line bg-panelSoft text-slate-300"
+                  : "border-border bg-surface-soft text-muted-foreground"
               )}
               href={item.href}
               key={item.view}

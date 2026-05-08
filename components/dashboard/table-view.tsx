@@ -105,7 +105,7 @@ export const TableView = ({ transactions }: TableViewProps) => {
     <section className="h-full min-h-0 overflow-y-auto pb-4">
       <div className="mb-2 flex justify-end md:mb-3">
         <button
-          className="inline-flex items-center gap-2 rounded-md border border-line bg-panelSoft px-2 py-1.5 text-xs font-medium text-slate-300 md:px-3 md:py-2 md:text-sm"
+          className="inline-flex items-center gap-2 rounded-md border border-border bg-surface-soft px-2 py-1.5 text-xs font-medium text-muted-foreground md:px-3 md:py-2 md:text-sm"
           onClick={() => setSort(defaultSort)}
           type="button"
         >
@@ -115,7 +115,7 @@ export const TableView = ({ transactions }: TableViewProps) => {
       </div>
 
       {transactions.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-line bg-panel/70 p-6 text-center text-sm leading-6 text-slate-400">
+        <div className="rounded-lg border border-dashed border-border bg-surface/70 p-6 text-center text-sm leading-6 text-muted">
           Aucune transaction pour le moment.
         </div>
       ) : null}
@@ -129,7 +129,7 @@ export const TableView = ({ transactions }: TableViewProps) => {
                   "rounded-md px-2 py-2 text-left uppercase tracking-normal transition",
                   column.align === "center" && "text-center",
                   hoveredColumn === column.key && "bg-mint/10 text-slate-100",
-                  sort.column === column.key && "text-kamas"
+                  sort.column === column.key && "text-primary"
                 )}
                 key={column.key}
                 onClick={() => toggleSort(column.key)}

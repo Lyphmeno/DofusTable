@@ -17,7 +17,7 @@ export const LogoutButton = () => {
   return (
     <button
       aria-label="Se deconnecter"
-      className="rounded-md border border-line bg-panel p-2 text-slate-300"
+      className="rounded-md border border-border bg-surface p-2 text-muted-foreground"
       onClick={handleLogout}
       type="button"
     >

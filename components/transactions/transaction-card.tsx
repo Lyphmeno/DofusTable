@@ -23,13 +23,13 @@ export const TransactionCard = ({ highlightedColumn, transaction }: TransactionC
   const profitRoi = transaction.status === "selling" ? computed.pendingRoi : computed.realizedRoi;
   const profitClass =
     transaction.status === "selling"
-      ? "font-semibold text-kamas"
+      ? "font-semibold text-primary"
       : profitValue >= 0
-        ? "font-semibold text-mint"
-        : "font-semibold text-coral";
+        ? "font-semibold text-success"
+        : "font-semibold text-danger";
 
   return (
-    <article className="rounded-lg border border-line bg-panel px-3 py-2 shadow-soft md:py-3">
+    <article className="rounded-lg border border-border bg-surface px-3 py-2 shadow-soft md:py-3">
       <div className="grid grid-cols-[minmax(13rem,1.8fr)_0.5fr_0.55fr_0.75fr_0.55fr_0.8fr_0.75fr_1fr_0.9fr_2.5rem] items-center gap-3 text-xs md:gap-4 md:text-sm">
         <DesktopCell column="item" highlightedColumn={highlightedColumn}>
           <InlineTransactionField
@@ -56,7 +56,7 @@ export const TransactionCard = ({ highlightedColumn, transaction }: TransactionC
           <InlineTransactionField ariaLabel="Prix vente" field="sellPackPrice" id={transaction.id} kind="kamas" value={transaction.sellPackPrice} />
         </DesktopCell>
         <DesktopCell align="center" column="tax" highlightedColumn={highlightedColumn}>
-          <span className="font-medium text-slate-300">
+          <span className="font-medium text-muted-foreground">
           <KamasValue value={computed.listingTax} />
           </span>
         </DesktopCell>
@@ -105,7 +105,7 @@ export const DeleteTransactionButton = ({ id }: DeleteTransactionButtonProps) =>
   return (
     <form action={deleteTransactionAction}>
       <input name="id" type="hidden" value={id} />
-      <button className="rounded-md border border-line bg-panelSoft p-2 text-coral" type="submit" aria-label="Supprimer">
+      <button className="rounded-md border border-border bg-surface-soft p-2 text-danger" type="submit" aria-label="Supprimer">
         <Trash2 size="1rem" />
       </button>
     </form>
