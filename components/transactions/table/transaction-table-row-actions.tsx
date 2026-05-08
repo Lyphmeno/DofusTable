@@ -13,10 +13,10 @@ export const TransactionTableRowActions = ({ id }: TransactionTableRowActionsPro
       <input name="id" type="hidden" value={id} />
       <button
         aria-label="Supprimer"
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface-soft text-danger transition hover:bg-surface-strong"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface-soft text-danger transition hover:bg-surface-strong"
         type="submit"
       >
-        <Trash2 size="1rem" />
+        <Trash2 size="0.875rem" />
       </button>
     </form>
   );

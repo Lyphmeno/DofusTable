@@ -11,6 +11,9 @@ type TransactionTableProps = {
   transactions: Transaction[];
 };
 
+const rightAlignedColumnIds = new Set(["totalBuyPrice", "buyPackPrice", "sellPackPrice", "listingTax", "profit", "profitRoi", "createdAt"]);
+const centerAlignedColumnIds = new Set(["buyPackType", "sellPackType", "actions"]);
+
 export const TransactionTable = ({ transactions }: TransactionTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
   const table = useReactTable({
@@ -41,57 +44,80 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-soft">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[82rem] table-fixed border-collapse">
-            <thead className="bg-surface-soft">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr className="border-b border-border-soft" key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    const canSort = header.column.getCanSort();
-                    const sorted = header.column.getIsSorted();
+      <div className="max-w-full overflow-hidden rounded-lg border border-border bg-surface shadow-soft">
+        <table className="w-full max-w-full table-fixed border-collapse">
+          <thead className="bg-surface-soft">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr className="border-b border-border-soft" key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const canSort = header.column.getCanSort();
+                  const sorted = header.column.getIsSorted();
+                  const alignClassName = rightAlignedColumnIds.has(header.column.id)
+                    ? "text-right"
+                    : centerAlignedColumnIds.has(header.column.id)
+                      ? "text-center"
+                      : "text-left";
 
-                    return (
-                      <th
-                        className="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase tracking-normal text-muted-foreground"
-                        key={header.id}
-                        style={{ width: header.getSize() }}
-                      >
-                        {header.isPlaceholder ? null : canSort ? (
-                          <button
-                            className={cn(
-                              "inline-flex items-center gap-1 rounded-md text-left uppercase transition",
-                              "hover:text-foreground",
-                              sorted && "text-primary"
-                            )}
-                            onClick={header.column.getToggleSortingHandler()}
-                            type="button"
-                          >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            {sorted === "asc" ? "↑" : sorted === "desc" ? "↓" : null}
-                          </button>
-                        ) : (
-                          flexRender(header.column.columnDef.header, header.getContext())
-                        )}
-                      </th>
-                    );
-                  })}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <tr className="h-12 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60" key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <td className="whitespace-nowrap px-3 py-2 text-sm text-foreground" key={cell.id}>
+                  return (
+                    <th
+                      className={cn(
+                        "overflow-hidden text-ellipsis whitespace-nowrap px-2 py-2 text-[0.7rem] font-medium uppercase tracking-normal text-muted-foreground",
+                        alignClassName
+                      )}
+                      key={header.id}
+                      style={{ width: `${header.getSize()}%` }}
+                    >
+                      {header.isPlaceholder ? null : canSort ? (
+                        <button
+                          className={cn(
+                            "inline-flex max-w-full items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap rounded-md uppercase transition",
+                            "hover:text-foreground",
+                            rightAlignedColumnIds.has(header.column.id) && "justify-end text-right",
+                            centerAlignedColumnIds.has(header.column.id) && "justify-center text-center",
+                            !rightAlignedColumnIds.has(header.column.id) && !centerAlignedColumnIds.has(header.column.id) && "text-left",
+                            sorted && "text-primary"
+                          )}
+                          onClick={header.column.getToggleSortingHandler()}
+                          type="button"
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {sorted === "asc" ? "↑" : sorted === "desc" ? "↓" : null}
+                        </button>
+                      ) : (
+                        flexRender(header.column.columnDef.header, header.getContext())
+                      )}
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr className="h-10 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60" key={row.id}>
+                {row.getVisibleCells().map((cell) => {
+                  const alignClassName = rightAlignedColumnIds.has(cell.column.id)
+                    ? "text-right"
+                    : centerAlignedColumnIds.has(cell.column.id)
+                      ? "text-center"
+                      : "text-left";
+
+                  return (
+                    <td
+                      className={cn(
+                        "overflow-hidden text-ellipsis whitespace-nowrap px-2 py-2 text-xs text-foreground",
+                        alignClassName
+                      )}
+                      key={cell.id}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </section>
   );

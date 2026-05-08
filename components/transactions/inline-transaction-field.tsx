@@ -40,14 +40,14 @@ export const InlineTransactionField = ({
     <form action={updateTransactionFieldAction} className={wrapperClassName} ref={formRef}>
       <input name="id" type="hidden" value={id} />
       <input name="field" type="hidden" value={field} />
-      <span className={cn("inline-flex w-full items-center gap-1", kind === "kamas" && "w-auto", className)}>
+      <span className={cn("inline-flex min-w-0 max-w-full items-center gap-1", kind === "text" && "w-full", className)}>
         <input
           aria-label={ariaLabel}
           className={cn(
-            "h-8 min-w-0 rounded-md border border-transparent bg-transparent py-1 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:bg-surface-soft",
-            kind === "text" && "w-full",
-            kind === "number" && "px-2 text-center",
-            kind === "kamas" && "px-1 text-center"
+            "h-7 min-w-0 max-w-full rounded-md border border-transparent bg-transparent py-1 text-xs font-medium text-foreground outline-none transition focus:border-primary focus:bg-surface-soft",
+            kind === "text" && "w-full truncate",
+            kind === "number" && "px-2 text-right tabular-nums",
+            kind === "kamas" && "px-1 text-right tabular-nums"
           )}
           defaultValue={value}
           inputMode={kind === "text" ? "text" : "numeric"}
@@ -62,7 +62,7 @@ export const InlineTransactionField = ({
           style={adaptiveWidth ? { width: adaptiveWidth } : undefined}
           type={kind === "text" ? "text" : "number"}
         />
-        {kind === "kamas" ? <KamasIcon className="h-3.5 w-3.5" /> : null}
+        {kind === "kamas" ? <KamasIcon className="h-3 w-3" /> : null}
       </span>
     </form>
   );
@@ -86,7 +86,7 @@ export const InlinePackType = ({ id, field, value, ariaLabel, wrapperClassName }
       <input name="field" type="hidden" value={field} />
       <select
         aria-label={ariaLabel}
-        className="h-8 w-[4.25rem] rounded-md border border-border bg-surface-soft px-2 text-sm font-semibold text-foreground outline-none focus:border-primary"
+        className="h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-semibold text-foreground outline-none focus:border-primary"
         defaultValue={value}
         name="value"
         onChange={() => {
@@ -119,7 +119,7 @@ export const InlineTransactionStatus = ({ id, value, wrapperClassName }: InlineT
       <input name="field" type="hidden" value="status" />
       <select
         aria-label="Statut"
-        className="h-8 w-full rounded-md border border-border bg-surface-soft px-2 text-sm font-medium text-foreground outline-none focus:border-primary"
+        className="h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-medium text-foreground outline-none focus:border-primary"
         defaultValue={value}
         name="value"
         onChange={() => {
