@@ -20,7 +20,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     accessorKey: "itemName",
     header: "Item",
     cell: ({ row }) => (
-      <div className="flex min-w-0 items-center gap-2 truncate" title={row.original.itemName}>
+      <div className="flex min-w-0 items-center gap-2" title={row.original.itemName}>
         {row.original.itemIconUrl ? (
           <img
             alt=""
@@ -31,17 +31,10 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
             width={20}
           />
         ) : null}
-        <InlineTransactionField
-          ariaLabel="Nom de l'item"
-          className="w-full truncate"
-          field="itemName"
-          id={row.original.id}
-          value={row.original.itemName}
-          wrapperClassName="min-w-0 flex-1"
-        />
+        <span className="min-w-0 flex-1 truncate font-medium text-foreground">{row.original.itemName}</span>
       </div>
     ),
-    size: 20,
+    size: 24,
     sortingFn: (a, b) => a.original.itemName.localeCompare(b.original.itemName, "fr-FR")
   },
   {
@@ -68,7 +61,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <KamasValue className="min-w-0 truncate" iconClassName={kamaIconClassName} value={calculateTransaction(row.original).totalBuyPrice} />
       </span>
     ),
-    size: 9,
+    size: 8,
     sortingFn: (a, b) => calculateTransaction(a.original).totalBuyPrice - calculateTransaction(b.original).totalBuyPrice
   },
   {
@@ -86,7 +79,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         />
       </div>
     ),
-    size: 8
+    size: 7
   },
   {
     accessorKey: "sellPackType",
@@ -114,7 +107,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         />
       </div>
     ),
-    size: 8
+    size: 7
   },
   {
     id: "listingTax",
@@ -124,7 +117,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <KamasValue className="min-w-0 truncate" iconClassName={kamaIconClassName} value={calculateTransaction(row.original).listingTax} />
       </span>
     ),
-    size: 8,
+    size: 7,
     sortingFn: (a, b) => calculateTransaction(a.original).listingTax - calculateTransaction(b.original).listingTax
   },
   {
@@ -146,7 +139,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         </span>
       );
     },
-    size: 9,
+    size: 8,
     sortingFn: (a, b) => {
       const aComputed = calculateTransaction(a.original);
       const bComputed = calculateTransaction(b.original);
@@ -195,17 +188,17 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     accessorKey: "status",
     header: "Statut",
     cell: ({ row }) => <InlineTransactionStatus id={row.original.id} value={row.original.status} />,
-    size: 9
+    size: 8
   },
   {
     accessorKey: "createdAt",
     header: "Date",
     cell: ({ row }) => (
-      <span className="block min-w-0 truncate text-right text-xs text-muted-foreground">
+      <span className="block min-w-0 truncate text-center text-xs tabular-nums text-muted-foreground">
         {createdDateFormatter.format(new Date(row.original.createdAt))}
       </span>
     ),
-    size: 5,
+    size: 4,
     sortingFn: (a, b) => new Date(a.original.createdAt).getTime() - new Date(b.original.createdAt).getTime()
   },
   {
@@ -216,6 +209,6 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <TransactionTableRowActions id={row.original.id} />
       </div>
     ),
-    size: 4
+    size: 3
   }
 ];

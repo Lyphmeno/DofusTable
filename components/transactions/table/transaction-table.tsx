@@ -11,8 +11,8 @@ type TransactionTableProps = {
   transactions: Transaction[];
 };
 
-const rightAlignedColumnIds = new Set(["totalBuyPrice", "buyPackPrice", "sellPackPrice", "listingTax", "profit", "profitRoi", "createdAt"]);
-const centerAlignedColumnIds = new Set(["buyPackType", "sellPackType", "actions"]);
+const rightAlignedColumnIds = new Set(["totalBuyPrice", "buyPackPrice", "sellPackPrice", "listingTax", "profit", "profitRoi"]);
+const centerAlignedColumnIds = new Set(["buyPackType", "sellPackType", "createdAt", "actions"]);
 
 export const TransactionTable = ({ transactions }: TransactionTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
