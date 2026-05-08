@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { Search } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { loadDofusItemsFromCache, type DofusItem } from "@/lib/items/dofus-items";
+import {
+  getItemSearchTokens,
+  getDofusItemQueryScore,
+  loadDofusItemsFromCache,
+  toSearchableDofusItem,
+  type DofusItem,
+  type SearchableDofusItem
+} from "@/lib/items/dofus-items";
 import { cn } from "@/lib/utils/cn";
 
 type ItemComboboxProps = {
@@ -22,14 +29,6 @@ type ItemComboboxProps = {
 const defaultMaxResults = 15;
 const debounceDelay = 120;
 
-const normalizeSearch = (value: string): string => {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("fr-FR")
-    .trim();
-};
-
 export const ItemCombobox = ({
   className,
   disabled = false,
@@ -46,7 +45,7 @@ export const ItemCombobox = ({
   const inputId = id ?? generatedId;
   const listboxId = `${inputId}-listbox`;
   const containerRef = useRef<HTMLDivElement>(null);
-  const [items, setItems] = useState<DofusItem[]>([]);
+  const [items, setItems] = useState<SearchableDofusItem[]>([]);
   const [query, setQuery] = useState(value?.name ?? "");
   const [debouncedQuery, setDebouncedQuery] = useState(value?.name ?? "");
   const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +59,7 @@ export const ItemCombobox = ({
     loadDofusItemsFromCache()
       .then((cachedItems) => {
         if (!ignore) {
-          setItems(cachedItems);
+          setItems(cachedItems.map(toSearchableDofusItem));
           setError(null);
         }
       })
@@ -110,15 +109,21 @@ export const ItemCombobox = ({
   }, []);
 
   const results = useMemo(() => {
-    const search = normalizeSearch(debouncedQuery);
+    const queryTokens = getItemSearchTokens(debouncedQuery);
 
-    if (search.length < 2) {
+    if (debouncedQuery.trim().length < 2 || queryTokens.length === 0) {
       return [];
     }
 
     return items
-      .filter((item) => normalizeSearch(item.name).includes(search))
-      .slice(0, Math.max(1, maxResults));
+      .map((item) => ({
+        item,
+        score: getDofusItemQueryScore(item, queryTokens)
+      }))
+      .filter((result): result is { item: SearchableDofusItem; score: number } => result.score !== null)
+      .sort((a, b) => a.score - b.score || a.item.name.localeCompare(b.item.name, "fr-FR"))
+      .slice(0, Math.max(1, maxResults))
+      .map((result) => result.item);
   }, [debouncedQuery, items, maxResults]);
 
   const selectItem = (item: DofusItem) => {
@@ -170,10 +175,13 @@ export const ItemCombobox = ({
         >
           {isLoading ? <ComboboxMessage>Chargement...</ComboboxMessage> : null}
           {error ? <ComboboxMessage>{error}</ComboboxMessage> : null}
-          {!isLoading && !error && debouncedQuery.trim().length > 0 && debouncedQuery.trim().length < 2 ? (
+          {!isLoading && !error && items.length === 0 ? (
+            <ComboboxMessage>Liste d&apos;items non generee. Lance npm run sync:items.</ComboboxMessage>
+          ) : null}
+          {!isLoading && !error && items.length > 0 && debouncedQuery.trim().length > 0 && debouncedQuery.trim().length < 2 ? (
             <ComboboxMessage>Entrez au moins 2 caracteres.</ComboboxMessage>
           ) : null}
-          {!isLoading && !error && debouncedQuery.trim().length >= 2 && results.length === 0 ? (
+          {!isLoading && !error && items.length > 0 && debouncedQuery.trim().length >= 2 && results.length === 0 ? (
             <ComboboxMessage>Aucun item trouve.</ComboboxMessage>
           ) : null}
           {results.length > 0 ? (

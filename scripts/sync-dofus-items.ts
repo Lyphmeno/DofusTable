@@ -52,14 +52,134 @@ const readLocalizedString = (value: unknown): string | null => {
 };
 
 const readItemType = (record: UnknownRecord): string => {
-  const type = record.type;
+  return getItemTypeName(record) ?? "Inconnu";
+};
 
-  if (type && typeof type === "object") {
-    const typeRecord = type as UnknownRecord;
-    return readLocalizedString(typeRecord.name) ?? "Inconnu";
+const getItemTypeRecord = (item: unknown): UnknownRecord | null => {
+  if (!item || typeof item !== "object") {
+    return null;
   }
 
-  return readLocalizedString(type) ?? "Inconnu";
+  const record = item as UnknownRecord;
+  return record.type && typeof record.type === "object" ? (record.type as UnknownRecord) : null;
+};
+
+const getItemTypeName = (item: unknown): string | null => {
+  const type = getItemTypeRecord(item);
+
+  if (type && typeof type === "object") {
+    return readLocalizedString(type.name);
+  }
+
+  return null;
+};
+
+const getItemTypeId = (item: unknown): number | null => {
+  const type = getItemTypeRecord(item);
+  const record = item && typeof item === "object" ? (item as UnknownRecord) : null;
+  return readNumber(type?.id) ?? readNumber(record?.typeId);
+};
+
+const getItemCategoryId = (item: unknown): number | null => {
+  return readNumber(getItemTypeRecord(item)?.categoryId);
+};
+
+const getItemSuperTypeName = (item: unknown): string | null => {
+  const superType = getItemTypeRecord(item)?.superType;
+
+  if (superType && typeof superType === "object") {
+    return readLocalizedString((superType as UnknownRecord).name);
+  }
+
+  return null;
+};
+
+const isQuestItem = (item: unknown): boolean => {
+  const categoryId = getItemCategoryId(item);
+  const typeName = getItemTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+  const superTypeName = getItemSuperTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+
+  return categoryId === 3 || typeName.includes("quête") || superTypeName.includes("quête");
+};
+
+const isTechnicalItem = (item: unknown): boolean => {
+  const record = item && typeof item === "object" ? (item as UnknownRecord) : null;
+  const name = readLocalizedString(record?.name)?.toLocaleLowerCase("fr-FR") ?? "";
+  const typeName = getItemTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+  const superTypeName = getItemSuperTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+  const iconUrl = readString(record?.img);
+
+  return (
+    name.startsWith("(mj)") ||
+    name.includes("almanax méryde") ||
+    typeName.includes("invisible") ||
+    typeName.includes("roleplay") ||
+    superTypeName.includes("bonus de jeu de rôle") ||
+    iconUrl === "https://api.dofusdb.fr/img/items/0.png" ||
+    iconUrl?.endsWith("/0.png") === true
+  );
+};
+
+const isCosmeticItem = (item: unknown): boolean => {
+  const categoryId = getItemCategoryId(item);
+  const typeName = getItemTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+  const superTypeName = getItemSuperTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+
+  return (
+    categoryId === 5 ||
+    typeName.includes("apparat") ||
+    typeName.includes("attitude") ||
+    typeName.includes("titre") ||
+    typeName.includes("ornement") ||
+    superTypeName.includes("cosmétique")
+  );
+};
+
+const isValidDofusItem = (item: unknown): boolean => {
+  const record = item && typeof item === "object" ? (item as UnknownRecord) : null;
+  const id = readNumber(record?.id);
+  const name = readLocalizedString(record?.name);
+  const iconUrl = readString(record?.img);
+
+  return id !== null && name !== null && /[a-zA-ZÀ-ÿ0-9]/.test(name) && iconUrl !== null && !isTechnicalItem(item);
+};
+
+const isResourceMarketItem = (item: unknown): boolean => {
+  const record = item && typeof item === "object" ? (item as UnknownRecord) : null;
+  const categoryId = getItemCategoryId(item);
+  const typeName = getItemTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+  const superTypeName = getItemSuperTypeName(item)?.toLocaleLowerCase("fr-FR") ?? "";
+
+  if (categoryId !== 2 || !isValidDofusItem(item) || isQuestItem(item) || isCosmeticItem(item)) {
+    return false;
+  }
+
+  if (record?.isSaleable === false) {
+    return false;
+  }
+
+  if (
+    typeName.includes("objet de mission") ||
+    typeName.includes("objet de dons") ||
+    typeName.includes("visage") ||
+    typeName.includes("corps") ||
+    typeName.includes("poses") ||
+    typeName.includes("tatouage") ||
+    typeName.includes("haïku")
+  ) {
+    return false;
+  }
+
+  if (
+    typeName.includes("ressource de quête") ||
+    superTypeName.includes("malédiction") ||
+    superTypeName.includes("bénédiction") ||
+    superTypeName.includes("suiveur")
+  ) {
+    return false;
+  }
+
+  return true;
 };
 
 const normalizeDofusDbItem = (item: unknown): DofusItem | null => {
@@ -82,6 +202,30 @@ const normalizeDofusDbItem = (item: unknown): DofusItem | null => {
     level: readNumber(record.level),
     iconUrl: readString(record.img)
   };
+};
+
+const formatTypeKey = (item: unknown): string => {
+  const typeId = getItemTypeId(item);
+  const typeName = getItemTypeName(item) ?? "Inconnu";
+  const categoryId = getItemCategoryId(item);
+  const superTypeName = getItemSuperTypeName(item) ?? "Inconnu";
+
+  return `${typeId ?? "unknown"}\t${typeName}\tcategory:${categoryId ?? "unknown"}\tsuper:${superTypeName}`;
+};
+
+const logItemTypeSummary = (items: unknown[], label: string) => {
+  const counts = new Map<string, number>();
+
+  for (const item of items) {
+    const key = formatTypeKey(item);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  console.log(`${label}: ${counts.size} type/category group(s)`);
+  for (const [key, count] of [...counts.entries()].sort((a, b) => b[1] - a[1])) {
+    const [typeId, typeName, category, superType] = key.split("\t");
+    console.log(`- typeId=${typeId} | ${typeName} | ${category} | ${superType} | count=${count}`);
+  }
 };
 
 const buildPageUrl = (skip: number): string => {
@@ -180,22 +324,26 @@ const sync = async () => {
   }
 
   const rawItems = pages.flatMap((page) => page.data);
+  console.log(`Fetched ${rawItems.length} raw item(s).`);
+  logItemTypeSummary(rawItems, "DofusDB raw item types");
+
+  const marketItems = rawItems.filter(isResourceMarketItem);
+  logItemTypeSummary(marketItems, "Kept HDV resource item types");
+
   const normalizedItems = normalizeDofusItems(
-    rawItems.map(normalizeDofusDbItem).filter((item): item is DofusItem => item !== null)
+    marketItems.map(normalizeDofusDbItem).filter((item): item is DofusItem => item !== null)
   );
 
-  console.log(`Fetched ${rawItems.length} raw item(s).`);
+  console.log(`Kept ${marketItems.length} market-relevant raw item(s).`);
   console.log(`Normalized ${normalizedItems.length} item(s).`);
 
   if (normalizedItems.length === 0) {
     if (await cacheExists()) {
-      console.warn(`No item was normalized. Existing cache preserved at ${outputPath}`);
+      console.warn(`No item was kept after filtering. Existing cache preserved at ${outputPath}`);
       return;
     }
 
-    await writeCache([]);
-    console.warn(`No item was normalized and no cache existed. Wrote empty cache to ${outputPath}`);
-    return;
+    throw new Error("No item was kept after filtering and no existing cache was found. Cache file was not updated.");
   }
 
   await writeCache(normalizedItems);
