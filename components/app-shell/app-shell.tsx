@@ -1,22 +1,22 @@
 import { LogoutButton } from "@/components/auth/logout-button";
-import { AddView } from "@/components/dashboard/add-view";
-import { HomeView } from "@/components/dashboard/home-view";
-import { TableView } from "@/components/dashboard/table-view";
+import { AddView } from "@/components/app-shell/add-view";
+import { HomeView } from "@/components/app-shell/home-view";
+import { TableView } from "@/components/app-shell/table-view";
 import { AppNavigation, type AppView } from "@/components/navigation/app-navigation";
 import type { Transaction } from "@/lib/types/transaction";
 
-type DashboardShellProps = {
+type AppShellProps = {
   transactions?: Transaction[];
   activeView: AppView;
 };
 
 const pageTitles: Record<AppView, string> = {
   home: "Accueil",
-  add: "Ajouter",
+  add: "Nouvel achat",
   table: "Tableau"
 };
 
-export const DashboardShell = ({ transactions = [], activeView }: DashboardShellProps) => {
+export const AppShell = ({ transactions = [], activeView }: AppShellProps) => {
   return (
     <main className="grid h-screen w-full min-w-0 grid-rows-[1fr_auto] overflow-hidden md:grid-cols-[9.5rem_1fr] md:grid-rows-1 lg:grid-cols-[10.5rem_1fr]">
       <AppNavigation activeView={activeView} variant="desktop" />

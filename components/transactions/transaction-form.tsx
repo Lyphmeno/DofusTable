@@ -43,7 +43,7 @@ const packLabels: Record<PackType, string> = {
 };
 
 const fieldClassName =
-  "mt-[0.35rem] w-full rounded-[0.65rem] border border-border bg-input p-[0.62rem] text-[0.95rem] text-foreground outline-none transition focus:border-primary focus:bg-surface-soft";
+  "mt-[0.35rem] h-12 w-full rounded-[0.65rem] border border-border bg-input px-[0.62rem] text-[0.95rem] text-foreground outline-none transition focus:border-primary focus:bg-surface-soft";
 
 const labelClassName = "text-[0.78rem] font-medium text-muted-foreground";
 
@@ -239,9 +239,9 @@ export const TransactionForm = () => {
 
       <div className="grid gap-[0.7rem] lg:grid-cols-2">
         <FormSection icon={<Package size="0.9rem" />} title="Item">
-          <div className="grid items-start gap-[0.7rem] sm:grid-cols-[minmax(0,1fr)_7.5rem]">
+          <div className="grid items-end gap-[0.7rem] sm:grid-cols-[minmax(0,1fr)_7.5rem]">
             <ItemCombobox
-              inputClassName="mt-[0.35rem] h-[2.65rem] rounded-[0.65rem] p-[0.62rem] pl-8 text-[0.95rem]"
+              inputClassName="mt-[0.35rem] h-12 rounded-[0.65rem] py-0 pl-8 pr-[0.62rem] text-[0.95rem]"
               key={formResetKey}
               label="Nom de l'item"
               labelClassName={labelClassName}

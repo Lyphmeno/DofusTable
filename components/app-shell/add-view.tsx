@@ -1,4 +1,4 @@
-import { MetricCard } from "@/components/dashboard/metric-card";
+import { MetricCard } from "@/components/app-shell/metric-card";
 import { TransactionForm } from "@/components/transactions/transaction-form";
 import { summarizeTransactions } from "@/lib/transactions/calculations";
 import type { Transaction } from "@/lib/types/transaction";

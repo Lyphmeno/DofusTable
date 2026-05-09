@@ -1,4 +1,4 @@
-import { packSizes, type DashboardSummary, type Transaction, type TransactionComputed } from "@/lib/types/transaction";
+import { packSizes, type Transaction, type TransactionComputed, type TransactionSummary } from "@/lib/types/transaction";
 
 export const calculateTransaction = (
   transaction: Pick<
@@ -46,7 +46,7 @@ export const calculateTransaction = (
   };
 };
 
-export const summarizeTransactions = (transactions: Transaction[]): DashboardSummary => {
+export const summarizeTransactions = (transactions: Transaction[]): TransactionSummary => {
   const totals = transactions.reduce(
     (summary, transaction) => {
       const computed = calculateTransaction(transaction);

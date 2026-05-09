@@ -60,7 +60,7 @@ export type TransactionComputed = {
   pendingQuantity: number;
 };
 
-export type DashboardSummary = {
+export type TransactionSummary = {
   totalBuyPrice: number;
   totalSellPrice: number;
   totalProfit: number;

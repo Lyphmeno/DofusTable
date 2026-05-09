@@ -1,4 +1,4 @@
-import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { AppShell } from "@/components/app-shell/app-shell";
 import { requireAllowedUser } from "@/lib/auth/require-allowed-user";
 import { redirect } from "next/navigation";
 
@@ -19,5 +19,5 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   await requireAllowedUser();
 
-  return <DashboardShell activeView="home" />;
+  return <AppShell activeView="home" />;
 }
