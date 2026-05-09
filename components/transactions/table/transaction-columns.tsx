@@ -25,7 +25,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         {row.original.itemIconUrl ? (
           <img
             alt=""
-            className="h-7 w-7 shrink-0 rounded-sm object-contain"
+            className="h-5 w-5 shrink-0 rounded-sm object-contain"
             height={20}
             loading="lazy"
             src={row.original.itemIconUrl}
@@ -67,10 +67,12 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
       <div className="flex min-w-0 tabular-nums justify-end">
         <InlineTransactionField
           ariaLabel="Prix achat"
-          className="justify-end"
+          className="w-full justify-end"
           field="buyPackPrice"
+          fill
           id={row.original.id}
           kind="kamas"
+          wrapperClassName="min-w-0 w-full"
           value={row.original.buyPackPrice}
         />
       </div>
@@ -122,10 +124,12 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
       <div className="flex min-w-0 justify-end">
         <InlineTransactionField
           ariaLabel="Prix vente"
-          className="justify-end"
+          className="w-full justify-end"
           field="sellPackPrice"
+          fill
           id={row.original.id}
           kind="kamas"
+          wrapperClassName="min-w-0 w-full"
           value={row.original.sellPackPrice}
         />
       </div>

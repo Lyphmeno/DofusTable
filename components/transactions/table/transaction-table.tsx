@@ -14,6 +14,7 @@ type TransactionTableProps = {
 const rightAlignedColumnIds = new Set(["totalBuyPrice", "buyPackPrice", "sellPackPrice", "listingTax", "profit", "profitRoi"]);
 const centerAlignedColumnIds = new Set(["buyPackType", "sellPackType", "createdAt", "actions"]);
 const compactColumnIds = new Set(["buyPackType", "sellPackType", "profitRoi", "createdAt"]);
+const separatedColumnIds = new Set(["itemName", "totalBuyPrice", "listingTax", "profitRoi"]);
 
 const getCellPaddingClassName = (columnId: string) => {
   if (columnId === "actions") {
@@ -25,6 +26,10 @@ const getCellPaddingClassName = (columnId: string) => {
   }
 
   return "px-2";
+};
+
+const getColumnSeparatorClassName = (columnId: string) => {
+  return separatedColumnIds.has(columnId) ? "border-r border-border-soft" : undefined;
 };
 
 export const TransactionTable = ({ transactions }: TransactionTableProps) => {
@@ -75,6 +80,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                       className={cn(
                         "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-[0.7rem] font-medium uppercase tracking-normal text-muted-foreground",
                         getCellPaddingClassName(header.column.id),
+                        getColumnSeparatorClassName(header.column.id),
                         alignClassName
                       )}
                       key={header.id}
@@ -127,6 +133,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                       className={cn(
                         "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-xs text-foreground",
                         getCellPaddingClassName(cell.column.id),
+                        getColumnSeparatorClassName(cell.column.id),
                         alignClassName
                       )}
                       key={cell.id}

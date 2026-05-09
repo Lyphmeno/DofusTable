@@ -13,6 +13,8 @@ type InlineTransactionFieldProps = {
   ariaLabel: string;
   kind?: "text" | "number" | "kamas";
   className?: string;
+  fill?: boolean;
+  inputClassName?: string;
   wrapperClassName?: string;
 };
 
@@ -23,12 +25,14 @@ export const InlineTransactionField = ({
   ariaLabel,
   kind = "text",
   className,
+  fill = false,
+  inputClassName,
   wrapperClassName
 }: InlineTransactionFieldProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [, startTransition] = useTransition();
   const valueLength = String(value).length;
-  const adaptiveWidth = kind === "text" ? undefined : `${Math.max(valueLength + 1, kind === "kamas" ? 4 : 2)}ch`;
+  const adaptiveWidth = kind === "text" || fill ? undefined : `${Math.max(valueLength + 1, kind === "kamas" ? 4 : 2)}ch`;
 
   const submit = () => {
     startTransition(() => {
@@ -40,14 +44,15 @@ export const InlineTransactionField = ({
     <form action={updateTransactionFieldAction} className={wrapperClassName} ref={formRef}>
       <input name="id" type="hidden" value={id} />
       <input name="field" type="hidden" value={field} />
-      <span className={cn("inline-flex min-w-0 max-w-full items-center gap-1", kind === "text" && "w-full", className)}>
+      <span className={cn("inline-flex min-w-0 max-w-full items-center gap-1", (kind === "text" || fill) && "w-full", className)}>
         <input
           aria-label={ariaLabel}
           className={cn(
             "h-7 min-w-0 max-w-full rounded-md border border-transparent bg-transparent py-1 text-xs font-medium text-foreground outline-none transition focus:border-primary focus:bg-surface-soft",
-            kind === "text" && "w-full truncate",
+            (kind === "text" || fill) && "w-full truncate",
             kind === "number" && "px-2 text-right tabular-nums",
-            kind === "kamas" && "px-1 text-right tabular-nums"
+            kind === "kamas" && "px-1 text-right tabular-nums",
+            inputClassName
           )}
           defaultValue={value}
           inputMode={kind === "text" ? "text" : "numeric"}
