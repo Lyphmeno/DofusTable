@@ -75,28 +75,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         />
       </div>
     ),
-    size: 9,
-    minSize: 9,
-  },
-  {
-    accessorKey: "sellPackType",
-    header: "Lot rev.",
-    cell: ({ row }) => (
-      <div className="flex min-w-0 justify-center overflow-hidden">
-        <InlinePackType
-          ariaLabel="Lot vente"
-          className={compactPackSelectClassName}
-          field="sellPackType"
-          id={row.original.id}
-          value={row.original.sellPackType}
-          wrapperClassName="min-w-0 max-w-full"
-        />
-      </div>
-    ),
-    size: 4,
-    minSize: 4,
-    maxSize: 5,
-    sortingFn: (a, b) => packSizes[a.original.sellPackType] - packSizes[b.original.sellPackType]
+    size: 7,
+    minSize: 7,
   },
   {
     id: "totalBuyPrice",
@@ -116,6 +96,26 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     sortingFn: (a, b) => calculateTransaction(a.original).totalBuyPrice - calculateTransaction(b.original).totalBuyPrice
   },
   {
+    accessorKey: "sellPackType",
+    header: "Lot rev.",
+    cell: ({ row }) => (
+      <div className="flex min-w-0 justify-center overflow-hidden">
+        <InlinePackType
+          ariaLabel="Lot vente"
+          className={compactPackSelectClassName}
+          field="sellPackType"
+          id={row.original.id}
+          value={row.original.sellPackType}
+          wrapperClassName="min-w-0 max-w-full"
+        />
+      </div>
+    ),
+    size: 4,
+    minSize: 6,
+    maxSize: 7,
+    sortingFn: (a, b) => packSizes[a.original.sellPackType] - packSizes[b.original.sellPackType]
+  },
+  {
     accessorKey: "sellPackPrice",
     header: "Revente",
     cell: ({ row }) => (
@@ -130,8 +130,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         />
       </div>
     ),
-    size: 9,
-    minSize: 8
+    size: 7,
+    minSize: 7,
   },
   {
     id: "listingTax",
