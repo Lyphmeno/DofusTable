@@ -21,6 +21,11 @@ const getAuthenticatedUserId = async () => {
   };
 };
 
+const isMissingItemMetadataColumnError = (error: { code?: string; message?: string }) => {
+  const message = error.message?.toLocaleLowerCase("fr-FR") ?? "";
+  return error.code === "42703" || error.code === "PGRST204" || message.includes("item_id") || message.includes("item_icon_url");
+};
+
 export const createTransactionAction = async (formData: FormData) => {
   const { supabase, userId } = await getAuthenticatedUserId();
   const input = {
@@ -31,12 +36,38 @@ export const createTransactionAction = async (formData: FormData) => {
   };
 
   if (!input.itemName || input.quantityBought <= 0) {
-    return;
+    console.error("createTransactionAction validation failed", {
+      itemName: input.itemName,
+      quantityBought: input.quantityBought
+    });
+    return { success: false };
   }
 
-  await supabase.from("transactions").insert(toTransactionInsert(input, userId));
+  const insertPayload = toTransactionInsert(input, userId);
+  const { error } = await supabase.from("transactions").insert(insertPayload);
+
+  if (error) {
+    console.error("createTransactionAction insert failed", error);
+
+    if (isMissingItemMetadataColumnError(error)) {
+      const { item_id: _itemId, item_icon_url: _itemIconUrl, ...fallbackPayload } = insertPayload;
+      const { error: fallbackError } = await supabase.from("transactions").insert(fallbackPayload);
+
+      if (fallbackError) {
+        console.error("createTransactionAction fallback insert failed", fallbackError);
+        return { success: false };
+      }
+
+      revalidatePath("/");
+      console.warn("Transaction added without item metadata. Apply the item_id/item_icon_url Supabase migration to persist icons.");
+      return { success: true };
+    }
+
+    return { success: false };
+  }
 
   revalidatePath("/");
+  return { success: true };
 };
 
 export const updateTransactionAction = async (formData: FormData) => {

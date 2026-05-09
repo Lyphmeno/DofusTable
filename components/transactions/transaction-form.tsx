@@ -2,7 +2,7 @@
 
 import { Package, Plus, ReceiptText, ShoppingBag, TrendingUp } from "lucide-react";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createTransactionAction } from "@/app/actions/transactions";
 import { ItemCombobox } from "@/components/items/item-combobox";
 import { KamasIcon } from "@/components/ui/kamas-icon";
@@ -139,6 +139,10 @@ export const SummaryRow = ({ label, toneClassName, value }: { label: string; ton
 };
 
 export const TransactionForm = () => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const isSubmittingRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formResetKey, setFormResetKey] = useState(0);
   const [selectedItem, setSelectedItem] = useState<DofusItem | null>(null);
   const [numbers, setNumbers] = useState<Record<NumericFieldName, string>>({
     quantityBought: "1",
@@ -187,10 +191,41 @@ export const TransactionForm = () => {
     }));
   };
 
+  const handleCreateTransaction = async (formData: FormData) => {
+    if (isSubmittingRef.current) {
+      return;
+    }
+
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+
+    try {
+      const result = await createTransactionAction(formData);
+
+      if (result?.success) {
+        formRef.current?.reset();
+        setSelectedItem(null);
+        setFormResetKey((currentKey) => currentKey + 1);
+        setNumbers({
+          quantityBought: "1",
+          buyPackPrice: "0",
+          sellPackPrice: "0"
+        });
+        setPacks({
+          buyPackType: "unit",
+          sellPackType: "unit"
+        });
+      }
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
+    }
+  };
+
   const profitToneClassName = getToneClassName(preview.profit);
 
   return (
-    <form action={createTransactionAction} className="rounded-[1rem] border border-border bg-surface p-[0.9rem] shadow-soft">
+    <form action={handleCreateTransaction} className="rounded-[1rem] border border-border bg-surface p-[0.9rem] shadow-soft" ref={formRef}>
       <input name="itemId" type="hidden" value={selectedItem?.id ?? ""} />
       <input name="itemIconUrl" type="hidden" value={selectedItem?.iconUrl ?? ""} />
 
@@ -204,9 +239,12 @@ export const TransactionForm = () => {
 
       <div className="grid gap-[0.7rem] lg:grid-cols-2">
         <FormSection icon={<Package size="0.9rem" />} title="Item">
-          <div className="grid gap-[0.7rem] sm:grid-cols-[minmax(0,1fr)_22%]">
+          <div className="grid items-start gap-[0.7rem] sm:grid-cols-[minmax(0,1fr)_7.5rem]">
             <ItemCombobox
+              inputClassName="mt-[0.35rem] h-[2.65rem] rounded-[0.65rem] p-[0.62rem] pl-8 text-[0.95rem]"
+              key={formResetKey}
               label="Nom de l'item"
+              labelClassName={labelClassName}
               name="itemName"
               onQueryChange={(query) => {
                 if (selectedItem && query !== selectedItem.name) {
@@ -215,6 +253,7 @@ export const TransactionForm = () => {
               }}
               onSelect={setSelectedItem}
               placeholder="Ex: Rune Ga Pa"
+              value={selectedItem}
             />
             <NumberField label="Quantite achetee" min="1" name="quantityBought" onChange={handleNumberChange} value={numbers.quantityBought} />
           </div>
@@ -248,9 +287,13 @@ export const TransactionForm = () => {
         </FormSection>
       </div>
 
-      <button className="mt-[0.75rem] flex w-full items-center justify-center gap-[0.5rem] rounded-[0.75rem] bg-primary p-[0.7rem] font-semibold text-primary-foreground transition hover:bg-primary/90" type="submit">
+      <button
+        className="mt-[0.75rem] flex w-full items-center justify-center gap-[0.5rem] rounded-[0.75rem] bg-primary p-[0.7rem] font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+        disabled={isSubmitting}
+        type="submit"
+      >
         <Plus size="1.125rem" aria-hidden="true" />
-        Ajouter
+        {isSubmitting ? "Ajout..." : "Ajouter"}
       </button>
     </form>
   );

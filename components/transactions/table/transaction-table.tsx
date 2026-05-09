@@ -13,6 +13,19 @@ type TransactionTableProps = {
 
 const rightAlignedColumnIds = new Set(["totalBuyPrice", "buyPackPrice", "sellPackPrice", "listingTax", "profit", "profitRoi"]);
 const centerAlignedColumnIds = new Set(["buyPackType", "sellPackType", "createdAt", "actions"]);
+const compactColumnIds = new Set(["buyPackType", "sellPackType", "profitRoi", "createdAt"]);
+
+const getCellPaddingClassName = (columnId: string) => {
+  if (columnId === "actions") {
+    return "px-0.5";
+  }
+
+  if (compactColumnIds.has(columnId)) {
+    return "px-1";
+  }
+
+  return "px-2";
+};
 
 export const TransactionTable = ({ transactions }: TransactionTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
@@ -38,14 +51,13 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
         </button>
       </div>
 
-      {transactions.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border bg-surface/70 p-6 text-center text-sm leading-6 text-muted">
-          Aucune transaction pour le moment.
-        </div>
-      ) : null}
-
       <div className="max-w-full overflow-hidden rounded-lg border border-border bg-surface shadow-soft">
         <table className="w-full max-w-full table-fixed border-collapse">
+          <colgroup>
+            {table.getAllLeafColumns().map((column) => (
+              <col key={column.id} style={{ width: `${column.getSize()}%` }} />
+            ))}
+          </colgroup>
           <thead className="bg-surface-soft">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr className="border-b border-border-soft" key={headerGroup.id}>
@@ -61,7 +73,8 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                   return (
                     <th
                       className={cn(
-                        "overflow-hidden text-ellipsis whitespace-nowrap px-2 py-2 text-[0.7rem] font-medium uppercase tracking-normal text-muted-foreground",
+                        "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-[0.7rem] font-medium uppercase tracking-normal text-muted-foreground",
+                        getCellPaddingClassName(header.column.id),
                         alignClassName
                       )}
                       key={header.id}
@@ -93,6 +106,13 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
             ))}
           </thead>
           <tbody>
+            {table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td className="px-2 py-6 text-center text-sm text-muted" colSpan={table.getAllLeafColumns().length}>
+                  Aucune transaction pour le moment.
+                </td>
+              </tr>
+            ) : null}
             {table.getRowModel().rows.map((row) => (
               <tr className="h-10 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60" key={row.id}>
                 {row.getVisibleCells().map((cell) => {
@@ -105,7 +125,8 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                   return (
                     <td
                       className={cn(
-                        "overflow-hidden text-ellipsis whitespace-nowrap px-2 py-2 text-xs text-foreground",
+                        "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-xs text-foreground",
+                        getCellPaddingClassName(cell.column.id),
                         alignClassName
                       )}
                       key={cell.id}

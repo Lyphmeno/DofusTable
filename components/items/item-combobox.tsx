@@ -18,11 +18,13 @@ type ItemComboboxProps = {
   disabled?: boolean;
   id?: string;
   label?: string;
+  labelClassName?: string;
   maxResults?: number;
   name?: string;
   onQueryChange?: (query: string) => void;
   onSelect: (item: DofusItem) => void;
   placeholder?: string;
+  inputClassName?: string;
   value?: DofusItem | null;
 };
 
@@ -34,11 +36,13 @@ export const ItemCombobox = ({
   disabled = false,
   id,
   label = "Item",
+  labelClassName,
   maxResults = defaultMaxResults,
   name,
   onQueryChange,
   onSelect,
   placeholder = "Rechercher un item",
+  inputClassName,
   value
 }: ItemComboboxProps) => {
   const generatedId = useId();
@@ -136,7 +140,7 @@ export const ItemCombobox = ({
   return (
     <div className={cn("relative min-w-0", className)} ref={containerRef}>
       {label ? (
-        <label className="mb-1 block text-xs font-medium text-muted-foreground" htmlFor={inputId}>
+        <label className={cn("block text-xs font-medium text-muted-foreground", labelClassName)} htmlFor={inputId}>
           {label}
         </label>
       ) : null}
@@ -148,7 +152,10 @@ export const ItemCombobox = ({
           aria-expanded={isOpen}
           aria-label={label}
           autoComplete="off"
-          className="h-9 w-full min-w-0 rounded-md border border-border bg-input pl-8 pr-3 text-sm text-foreground outline-none transition placeholder:text-muted focus:border-primary"
+          className={cn(
+            "mt-1 h-9 w-full min-w-0 rounded-md border border-border bg-input pl-8 pr-3 text-sm text-foreground outline-none transition placeholder:text-muted focus:border-primary",
+            inputClassName
+          )}
           disabled={disabled}
           id={inputId}
           name={name}

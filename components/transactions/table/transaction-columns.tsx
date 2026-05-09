@@ -14,6 +14,7 @@ const createdDateFormatter = new Intl.DateTimeFormat("fr-FR", {
 });
 
 const kamaIconClassName = "h-3 w-3";
+const compactPackSelectClassName = "h-6 w-[2.6rem] px-1 text-[0.7rem]";
 
 export const transactionColumns: ColumnDef<Transaction>[] = [
   {
@@ -34,18 +35,28 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <span className="min-w-0 flex-1 truncate font-medium text-foreground">{row.original.itemName}</span>
       </div>
     ),
-    size: 24,
+    size: 26.5,
+    minSize: 20,
     sortingFn: (a, b) => a.original.itemName.localeCompare(b.original.itemName, "fr-FR")
   },
   {
     accessorKey: "buyPackType",
     header: "Lot ach.",
     cell: ({ row }) => (
-      <div className="flex min-w-0 justify-center">
-        <InlinePackType ariaLabel="Lot achat" field="buyPackType" id={row.original.id} value={row.original.buyPackType} />
+      <div className="flex min-w-0 justify-center overflow-hidden">
+        <InlinePackType
+          ariaLabel="Lot achat"
+          className={compactPackSelectClassName}
+          field="buyPackType"
+          id={row.original.id}
+          value={row.original.buyPackType}
+          wrapperClassName="min-w-0 max-w-full"
+        />
       </div>
     ),
-    size: 7,
+    size: 5.5,
+    minSize: 4,
+    maxSize: 6,
     sortingFn: (a, b) => packSizes[a.original.buyPackType] - packSizes[b.original.buyPackType]
   },
   {
@@ -61,7 +72,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <KamasValue className="min-w-0 truncate" iconClassName={kamaIconClassName} value={calculateTransaction(row.original).totalBuyPrice} />
       </span>
     ),
-    size: 8,
+    size: 8.5,
+    minSize: 7,
     sortingFn: (a, b) => calculateTransaction(a.original).totalBuyPrice - calculateTransaction(b.original).totalBuyPrice
   },
   {
@@ -79,17 +91,27 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         />
       </div>
     ),
-    size: 7
+    size: 8,
+    minSize: 7
   },
   {
     accessorKey: "sellPackType",
     header: "Lot rev.",
     cell: ({ row }) => (
-      <div className="flex min-w-0 justify-center">
-        <InlinePackType ariaLabel="Lot vente" field="sellPackType" id={row.original.id} value={row.original.sellPackType} />
+      <div className="flex min-w-0 justify-center overflow-hidden">
+        <InlinePackType
+          ariaLabel="Lot vente"
+          className={compactPackSelectClassName}
+          field="sellPackType"
+          id={row.original.id}
+          value={row.original.sellPackType}
+          wrapperClassName="min-w-0 max-w-full"
+        />
       </div>
     ),
-    size: 7,
+    size: 5.5,
+    minSize: 4,
+    maxSize: 6,
     sortingFn: (a, b) => packSizes[a.original.sellPackType] - packSizes[b.original.sellPackType]
   },
   {
@@ -107,7 +129,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         />
       </div>
     ),
-    size: 7
+    size: 8,
+    minSize: 7
   },
   {
     id: "listingTax",
@@ -117,7 +140,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         <KamasValue className="min-w-0 truncate" iconClassName={kamaIconClassName} value={calculateTransaction(row.original).listingTax} />
       </span>
     ),
-    size: 7,
+    size: 7.5,
+    minSize: 6.5,
     sortingFn: (a, b) => calculateTransaction(a.original).listingTax - calculateTransaction(b.original).listingTax
   },
   {
@@ -139,7 +163,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         </span>
       );
     },
-    size: 8,
+    size: 8.5,
+    minSize: 7,
     sortingFn: (a, b) => {
       const aComputed = calculateTransaction(a.original);
       const bComputed = calculateTransaction(b.original);
@@ -174,7 +199,9 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         </span>
       );
     },
-    size: 6,
+    size: 5.5,
+    minSize: 4.5,
+    maxSize: 6,
     sortingFn: (a, b) => {
       const aComputed = calculateTransaction(a.original);
       const bComputed = calculateTransaction(b.original);
@@ -187,28 +214,40 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "status",
     header: "Statut",
-    cell: ({ row }) => <InlineTransactionStatus id={row.original.id} value={row.original.status} />,
-    size: 8
+    cell: ({ row }) => (
+      <InlineTransactionStatus
+        className="h-6 px-1 text-[0.7rem]"
+        id={row.original.id}
+        value={row.original.status}
+        wrapperClassName="ml-auto min-w-0 max-w-full"
+      />
+    ),
+    size: 8.5,
+    minSize: 7
   },
   {
     accessorKey: "createdAt",
     header: "Date",
     cell: ({ row }) => (
-      <span className="block min-w-0 truncate text-center text-xs tabular-nums text-muted-foreground">
+      <span className="block min-w-0 truncate text-center text-[0.7rem] tabular-nums text-muted-foreground">
         {createdDateFormatter.format(new Date(row.original.createdAt))}
       </span>
     ),
-    size: 4,
+    size: 4.5,
+    minSize: 3.5,
+    maxSize: 4.5,
     sortingFn: (a, b) => new Date(a.original.createdAt).getTime() - new Date(b.original.createdAt).getTime()
   },
   {
     id: "actions",
     enableSorting: false,
     cell: ({ row }) => (
-      <div className="flex min-w-0 justify-end">
+      <div className="flex min-w-0 justify-center">
         <TransactionTableRowActions id={row.original.id} />
       </div>
     ),
-    size: 3
+    size: 3.5,
+    minSize: 2.5,
+    maxSize: 3.5
   }
 ];

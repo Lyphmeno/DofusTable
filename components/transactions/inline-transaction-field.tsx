@@ -73,10 +73,11 @@ type InlinePackTypeProps = {
   field: "buyPackType" | "sellPackType";
   value: PackType;
   ariaLabel: string;
+  className?: string;
   wrapperClassName?: string;
 };
 
-export const InlinePackType = ({ id, field, value, ariaLabel, wrapperClassName }: InlinePackTypeProps) => {
+export const InlinePackType = ({ id, field, value, ariaLabel, className, wrapperClassName }: InlinePackTypeProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [, startTransition] = useTransition();
 
@@ -86,7 +87,10 @@ export const InlinePackType = ({ id, field, value, ariaLabel, wrapperClassName }
       <input name="field" type="hidden" value={field} />
       <select
         aria-label={ariaLabel}
-        className="h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-semibold text-foreground outline-none focus:border-primary"
+        className={cn(
+          "h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-semibold text-foreground outline-none focus:border-primary",
+          className
+        )}
         defaultValue={value}
         name="value"
         onChange={() => {
@@ -106,10 +110,11 @@ export const InlinePackType = ({ id, field, value, ariaLabel, wrapperClassName }
 type InlineTransactionStatusProps = {
   id: string;
   value: TransactionStatus;
+  className?: string;
   wrapperClassName?: string;
 };
 
-export const InlineTransactionStatus = ({ id, value, wrapperClassName }: InlineTransactionStatusProps) => {
+export const InlineTransactionStatus = ({ id, value, className, wrapperClassName }: InlineTransactionStatusProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [, startTransition] = useTransition();
 
@@ -119,7 +124,10 @@ export const InlineTransactionStatus = ({ id, value, wrapperClassName }: InlineT
       <input name="field" type="hidden" value="status" />
       <select
         aria-label="Statut"
-        className="h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-medium text-foreground outline-none focus:border-primary"
+        className={cn(
+          "h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-medium text-foreground outline-none focus:border-primary",
+          className
+        )}
         defaultValue={value}
         name="value"
         onChange={() => {
