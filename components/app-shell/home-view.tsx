@@ -12,7 +12,7 @@ export const HomeView = () => {
         </div>
 
         <article className="group relative grid min-w-0 gap-[0.75rem] rounded-[0.75rem] border border-border bg-surface p-[0.75rem] shadow-soft transition hover:border-primary hover:bg-surface-soft md:grid-cols-[auto_1fr_auto] md:items-center md:rounded-[1rem] md:p-[1rem]">
-          <Link aria-label="Ouvrir Achat/Revente" className="absolute inset-0 rounded-[inherit]" href="/ajouter" />
+          <Link aria-label="Ouvrir Achat/Revente" className="absolute inset-0 rounded-[inherit]" href="/tableau" />
 
           <span className="relative flex h-10 w-10 items-center justify-center rounded-[0.65rem] bg-primary/10 text-primary md:h-12 md:w-12">
             <Repeat2 className="h-5 w-5 md:h-6 md:w-6" />

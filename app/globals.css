@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 :root {
   color-scheme: dark;
 
@@ -41,6 +52,8 @@
 html {
   min-height: 100%;
   background: rgb(var(--background));
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 body {
@@ -67,6 +80,13 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 button,

@@ -192,7 +192,7 @@ export const ItemCombobox = ({
             <ComboboxMessage>Aucun item trouve.</ComboboxMessage>
           ) : null}
           {results.length > 0 ? (
-            <ul className="max-h-80 overflow-y-auto py-1">
+            <ul className="scrollbar-none max-h-80 overflow-y-auto py-1">
               {results.map((item) => (
                 <li key={item.id} role="option">
                   <button

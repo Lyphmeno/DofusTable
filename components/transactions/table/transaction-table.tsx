@@ -15,6 +15,7 @@ const centerAlignedColumnIds = new Set(["buyPackType", "sellPackType", "createdA
 const compactColumnIds = new Set(["buyPackType", "sellPackType", "profitRoi", "createdAt"]);
 const separatedColumnIds = new Set(["itemName", "totalBuyPrice", "sellPackPrice", "profitRoi"]);
 const afterSeparatorColumnIds = new Set(["buyPackType", "sellPackType", "listingTax", "status"]);
+const snapStartColumnIds = new Set(["itemName", "buyPackType", "sellPackType", "listingTax", "status"]);
 
 const getCellPaddingClassName = (columnId: string) => {
   if (columnId === "actions") {
@@ -52,9 +53,9 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
   });
 
   return (
-    <section className="h-full min-h-0 overflow-y-auto pb-1.5 md:pb-4">
+    <section className="scrollbar-none h-full min-h-0 overflow-y-auto pb-1.5 md:pb-4">
       <div className="max-w-full overflow-hidden rounded-md border border-border bg-surface shadow-soft md:rounded-lg">
-        <div className="w-full overflow-x-auto">
+        <div className="scrollbar-none w-full snap-x snap-proximity scroll-px-1 overflow-x-auto overscroll-x-contain md:snap-none">
           <table className="w-full min-w-[68rem] table-fixed border-collapse md:min-w-[74rem] xl:min-w-full">
             <colgroup>
               {table.getAllLeafColumns().map((column) => (
@@ -79,6 +80,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                           "overflow-hidden text-ellipsis whitespace-nowrap py-1 text-[0.58rem] font-medium uppercase tracking-normal text-muted-foreground md:py-2 md:text-[0.7rem]",
                           getCellPaddingClassName(header.column.id),
                           getColumnSeparatorClassName(header.column.id),
+                          snapStartColumnIds.has(header.column.id) && "snap-start scroll-ml-1 md:snap-align-none",
                           alignClassName
                         )}
                         key={header.id}
@@ -132,6 +134,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                           "overflow-hidden text-ellipsis whitespace-nowrap py-1 text-[0.65rem] text-foreground md:py-2 md:text-xs",
                           getCellPaddingClassName(cell.column.id),
                           getColumnSeparatorClassName(cell.column.id),
+                          snapStartColumnIds.has(cell.column.id) && "snap-start scroll-ml-1 md:snap-align-none",
                           alignClassName
                         )}
                         key={cell.id}
