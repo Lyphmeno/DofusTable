@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils/cn";
 type MetricCardProps = {
   label: string;
   value: ReactNode;
-  tone?: "neutral" | "positive" | "warning";
+  tone?: "neutral" | "positive" | "negative" | "warning" | "muted";
 };
 
 export const MetricCard = ({ label, value, tone = "neutral" }: MetricCardProps) => {
@@ -15,7 +15,9 @@ export const MetricCard = ({ label, value, tone = "neutral" }: MetricCardProps) 
         className={cn(
           "mt-1 text-lg font-semibold tracking-normal",
           tone === "positive" && "text-success",
-          tone === "warning" && "text-primary"
+          tone === "negative" && "text-danger",
+          tone === "warning" && "text-primary",
+          tone === "muted" && "text-muted-foreground"
         )}
       >
         {value}

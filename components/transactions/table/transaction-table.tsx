@@ -66,95 +66,97 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
       </div>
 
       <div className="max-w-full overflow-hidden rounded-lg border border-border bg-surface shadow-soft">
-        <table className="w-full max-w-full table-fixed border-collapse">
-          <colgroup>
-            {table.getAllLeafColumns().map((column) => (
-              <col key={column.id} style={{ width: `${column.getSize()}%` }} />
-            ))}
-          </colgroup>
-          <thead className="bg-surface-soft">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr className="border-b border-border-soft" key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const canSort = header.column.getCanSort();
-                  const sorted = header.column.getIsSorted();
-                  const alignClassName = rightAlignedColumnIds.has(header.column.id)
-                    ? "text-right"
-                    : centerAlignedColumnIds.has(header.column.id)
-                      ? "text-center"
-                      : "text-left";
+        <div className="w-full overflow-x-auto">
+          <table className="w-full min-w-[70rem] table-fixed border-collapse xl:min-w-full">
+            <colgroup>
+              {table.getAllLeafColumns().map((column) => (
+                <col key={column.id} style={{ width: `${column.getSize()}%` }} />
+              ))}
+            </colgroup>
+            <thead className="bg-surface-soft">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr className="border-b border-border-soft" key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    const canSort = header.column.getCanSort();
+                    const sorted = header.column.getIsSorted();
+                    const alignClassName = rightAlignedColumnIds.has(header.column.id)
+                      ? "text-right"
+                      : centerAlignedColumnIds.has(header.column.id)
+                        ? "text-center"
+                        : "text-left";
 
-                  return (
-                    <th
-                      className={cn(
-                        "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-[0.7rem] font-medium uppercase tracking-normal text-muted-foreground",
-                        getCellPaddingClassName(header.column.id),
-                        getColumnSeparatorClassName(header.column.id),
-                        alignClassName
-                      )}
-                      key={header.id}
-                      style={{ width: `${header.getSize()}%` }}
-                    >
-                      {header.isPlaceholder ? null : canSort ? (
-                        <button
-                          className={cn(
-                            "inline-flex w-full max-w-full items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap rounded-md uppercase transition",
-                            "hover:text-foreground",
-                            rightAlignedColumnIds.has(header.column.id) && "justify-end text-right",
-                            centerAlignedColumnIds.has(header.column.id) && "justify-center text-center",
-                            !rightAlignedColumnIds.has(header.column.id) && !centerAlignedColumnIds.has(header.column.id) && "text-left",
-                            sorted && "text-primary"
-                          )}
-                          onClick={header.column.getToggleSortingHandler()}
-                          type="button"
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {sorted === "asc" ? "↑" : sorted === "desc" ? "↓" : null}
-                        </button>
-                      ) : (
-                        flexRender(header.column.columnDef.header, header.getContext())
-                      )}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.length === 0 ? (
-              <tr>
-                <td className="px-2 py-6 text-center text-sm text-muted" colSpan={table.getAllLeafColumns().length}>
-                  Aucune transaction pour le moment.
-                </td>
-              </tr>
-            ) : null}
-            {table.getRowModel().rows.map((row) => (
-              <tr className="h-10 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60" key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  const alignClassName = rightAlignedColumnIds.has(cell.column.id)
-                    ? "text-right"
-                    : centerAlignedColumnIds.has(cell.column.id)
-                      ? "text-center"
-                      : "text-left";
+                    return (
+                      <th
+                        className={cn(
+                          "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-[0.7rem] font-medium uppercase tracking-normal text-muted-foreground",
+                          getCellPaddingClassName(header.column.id),
+                          getColumnSeparatorClassName(header.column.id),
+                          alignClassName
+                        )}
+                        key={header.id}
+                        style={{ width: `${header.getSize()}%` }}
+                      >
+                        {header.isPlaceholder ? null : canSort ? (
+                          <button
+                            className={cn(
+                              "inline-flex w-full max-w-full items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap rounded-md uppercase transition",
+                              "hover:text-foreground",
+                              rightAlignedColumnIds.has(header.column.id) && "justify-end text-right",
+                              centerAlignedColumnIds.has(header.column.id) && "justify-center text-center",
+                              !rightAlignedColumnIds.has(header.column.id) && !centerAlignedColumnIds.has(header.column.id) && "text-left",
+                              sorted && "text-primary"
+                            )}
+                            onClick={header.column.getToggleSortingHandler()}
+                            type="button"
+                          >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {sorted === "asc" ? "↑" : sorted === "desc" ? "↓" : null}
+                          </button>
+                        ) : (
+                          flexRender(header.column.columnDef.header, header.getContext())
+                        )}
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.length === 0 ? (
+                <tr>
+                  <td className="px-2 py-6 text-center text-sm text-muted" colSpan={table.getAllLeafColumns().length}>
+                    Aucune transaction pour le moment.
+                  </td>
+                </tr>
+              ) : null}
+              {table.getRowModel().rows.map((row) => (
+                <tr className="h-10 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60" key={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    const alignClassName = rightAlignedColumnIds.has(cell.column.id)
+                      ? "text-right"
+                      : centerAlignedColumnIds.has(cell.column.id)
+                        ? "text-center"
+                        : "text-left";
 
-                  return (
-                    <td
-                      className={cn(
-                        "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-xs text-foreground",
-                        getCellPaddingClassName(cell.column.id),
-                        getColumnSeparatorClassName(cell.column.id),
-                        alignClassName
-                      )}
-                      key={cell.id}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    return (
+                      <td
+                        className={cn(
+                          "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-xs text-foreground",
+                          getCellPaddingClassName(cell.column.id),
+                          getColumnSeparatorClassName(cell.column.id),
+                          alignClassName
+                        )}
+                        key={cell.id}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );
