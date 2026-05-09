@@ -15,6 +15,11 @@ const createdDateFormatter = new Intl.DateTimeFormat("fr-FR", {
 
 const kamaIconClassName = "h-3 w-3";
 const compactPackSelectClassName = "h-6 w-[2.6rem] px-1 text-[0.7rem]";
+const statusSortOrder: Record<Transaction["status"], number> = {
+  selling: 0,
+  sold: 1,
+  unsold: 2
+};
 
 export const transactionColumns: ColumnDef<Transaction>[] = [
   {
@@ -79,9 +84,11 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     ),
     size: 7,
     minSize: 7,
+    sortingFn: (a, b) => a.original.buyPackPrice - b.original.buyPackPrice
   },
   {
     id: "totalBuyPrice",
+    accessorFn: (row) => calculateTransaction(row).totalBuyPrice,
     header: () => (
       <>
         <span className="hidden sm:inline">Total achat</span>
@@ -95,7 +102,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     ),
     size: 8,
     minSize: 8,
-    sortingFn: (a, b) => calculateTransaction(a.original).totalBuyPrice - calculateTransaction(b.original).totalBuyPrice
+    sortingFn: "basic"
   },
   {
     accessorKey: "sellPackType",
@@ -136,9 +143,11 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     ),
     size: 7,
     minSize: 7,
+    sortingFn: (a, b) => a.original.sellPackPrice - b.original.sellPackPrice
   },
   {
     id: "listingTax",
+    accessorFn: (row) => calculateTransaction(row).listingTax,
     header: "Taxe",
     cell: ({ row }) => (
       <span className="flex min-w-0 justify-end truncate font-medium tabular-nums text-muted-foreground" title={`${calculateTransaction(row.original).listingTax}`}>
@@ -147,14 +156,15 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     ),
     size: 6,
     minSize: 6,
-    sortingFn: (a, b) => calculateTransaction(a.original).listingTax - calculateTransaction(b.original).listingTax
+    sortingFn: "basic"
   },
   {
     id: "profit",
+    accessorFn: (row) => calculateTransaction(row).profit,
     header: "Bénéf.",
     cell: ({ row }) => {
       const computed = calculateTransaction(row.original);
-      const profitValue = row.original.status === "selling" ? computed.pendingProfit : computed.closedProfit;
+      const profitValue = computed.profit;
       const profitClass =
         row.original.status === "selling"
           ? "font-semibold text-primary"
@@ -170,17 +180,11 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     },
     size: 7,
     minSize: 6,
-    sortingFn: (a, b) => {
-      const aComputed = calculateTransaction(a.original);
-      const bComputed = calculateTransaction(b.original);
-      const aValue = a.original.status === "selling" ? aComputed.pendingProfit : aComputed.closedProfit;
-      const bValue = b.original.status === "selling" ? bComputed.pendingProfit : bComputed.closedProfit;
-
-      return aValue - bValue;
-    }
+    sortingFn: "basic"
   },
   {
     id: "profitRoi",
+    accessorFn: (row) => calculateTransaction(row).profitRoi,
     header: () => (
       <>
         <span className="hidden sm:inline">% profit</span>
@@ -189,8 +193,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     ),
     cell: ({ row }) => {
       const computed = calculateTransaction(row.original);
-      const profitValue = row.original.status === "selling" ? computed.pendingProfit : computed.closedProfit;
-      const profitRoi = row.original.status === "selling" ? computed.pendingRoi : computed.realizedRoi;
+      const profitValue = computed.profit;
+      const profitRoi = computed.profitRoi;
       const profitClass =
         row.original.status === "selling"
           ? "font-semibold text-primary"
@@ -207,14 +211,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     size: 5,
     minSize: 4.5,
     maxSize: 5.5,
-    sortingFn: (a, b) => {
-      const aComputed = calculateTransaction(a.original);
-      const bComputed = calculateTransaction(b.original);
-      const aValue = a.original.status === "selling" ? aComputed.pendingRoi : aComputed.realizedRoi;
-      const bValue = b.original.status === "selling" ? bComputed.pendingRoi : bComputed.realizedRoi;
-
-      return aValue - bValue;
-    }
+    sortingFn: "basic"
   },
   {
     accessorKey: "status",
@@ -228,7 +225,8 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
       />
     ),
     size: 7,
-    minSize: 7
+    minSize: 7,
+    sortingFn: (a, b) => statusSortOrder[a.original.status] - statusSortOrder[b.original.status]
   },
   {
     accessorKey: "createdAt",

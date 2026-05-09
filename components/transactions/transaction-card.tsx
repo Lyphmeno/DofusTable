@@ -20,8 +20,8 @@ export const TransactionCard = ({ highlightedColumn, transaction }: TransactionC
     day: "2-digit",
     month: "2-digit"
   }).format(new Date(transaction.createdAt));
-  const profitValue = transaction.status === "selling" ? computed.pendingProfit : computed.closedProfit;
-  const profitRoi = transaction.status === "selling" ? computed.pendingRoi : computed.realizedRoi;
+  const profitValue = computed.profit;
+  const profitRoi = computed.profitRoi;
   const profitClass =
     transaction.status === "selling"
       ? "font-semibold text-primary"

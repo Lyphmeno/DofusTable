@@ -19,11 +19,12 @@ export const calculateTransaction = (
   const estimatedProfit = estimatedSellPrice - totalBuyPrice - listingTax;
   const pendingProfit = transaction.status === "selling" ? estimatedProfit : 0;
   const realizedProfit = realizedSellPrice - totalBuyPrice - listingTax;
-  const closedProfit = transaction.status === "sold" ? realizedProfit : transaction.status === "unsold" ? -listingTax : 0;
+  const closedProfit = transaction.status === "sold" || transaction.status === "unsold" ? realizedProfit : 0;
   const profit = transaction.status === "selling" ? pendingProfit : closedProfit;
   const roi = totalBuyPrice > 0 ? estimatedProfit / totalBuyPrice : 0;
   const pendingRoi = totalBuyPrice > 0 ? pendingProfit / totalBuyPrice : 0;
   const realizedRoi = totalBuyPrice > 0 ? closedProfit / totalBuyPrice : 0;
+  const profitRoi = transaction.status === "selling" ? pendingRoi : realizedRoi;
 
   return {
     buyUnitPrice,
@@ -39,6 +40,7 @@ export const calculateTransaction = (
     closedProfit,
     profit,
     roi,
+    profitRoi,
     pendingRoi,
     realizedRoi,
     effectiveQuantitySold,

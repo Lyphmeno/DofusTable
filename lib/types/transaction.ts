@@ -54,6 +54,7 @@ export type TransactionComputed = {
   closedProfit: number;
   profit: number;
   roi: number;
+  profitRoi: number;
   pendingRoi: number;
   realizedRoi: number;
   effectiveQuantitySold: number;

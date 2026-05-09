@@ -14,11 +14,20 @@ type TransactionTableProps = {
 const rightAlignedColumnIds = new Set(["totalBuyPrice", "buyPackPrice", "sellPackPrice", "listingTax", "profit", "profitRoi"]);
 const centerAlignedColumnIds = new Set(["buyPackType", "sellPackType", "createdAt", "actions"]);
 const compactColumnIds = new Set(["buyPackType", "sellPackType", "profitRoi", "createdAt"]);
-const separatedColumnIds = new Set(["itemName", "totalBuyPrice", "listingTax", "profitRoi"]);
+const separatedColumnIds = new Set(["itemName", "totalBuyPrice", "sellPackPrice", "profitRoi"]);
+const afterSeparatorColumnIds = new Set(["buyPackType", "sellPackType", "listingTax", "status"]);
 
 const getCellPaddingClassName = (columnId: string) => {
   if (columnId === "actions") {
     return "px-0.5";
+  }
+
+  if (separatedColumnIds.has(columnId)) {
+    return compactColumnIds.has(columnId) ? "pl-1 pr-3" : "pl-2 pr-3";
+  }
+
+  if (afterSeparatorColumnIds.has(columnId)) {
+    return compactColumnIds.has(columnId) ? "pl-3 pr-1" : "pl-3 pr-2";
   }
 
   if (compactColumnIds.has(columnId)) {
@@ -89,7 +98,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           className={cn(
-                            "inline-flex max-w-full items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap rounded-md uppercase transition",
+                            "inline-flex w-full max-w-full items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap rounded-md uppercase transition",
                             "hover:text-foreground",
                             rightAlignedColumnIds.has(header.column.id) && "justify-end text-right",
                             centerAlignedColumnIds.has(header.column.id) && "justify-center text-center",

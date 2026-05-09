@@ -26,6 +26,12 @@ const isMissingItemMetadataColumnError = (error: { code?: string; message?: stri
   return error.code === "42703" || error.code === "PGRST204" || message.includes("item_id") || message.includes("item_icon_url");
 };
 
+const revalidateTransactionViews = () => {
+  revalidatePath("/");
+  revalidatePath("/ajouter");
+  revalidatePath("/tableau");
+};
+
 export const createTransactionAction = async (formData: FormData) => {
   const { supabase, userId } = await getAuthenticatedUserId();
   const input = {
@@ -58,7 +64,7 @@ export const createTransactionAction = async (formData: FormData) => {
         return { success: false };
       }
 
-      revalidatePath("/");
+      revalidateTransactionViews();
       console.warn("Transaction added without item metadata. Apply the item_id/item_icon_url Supabase migration to persist icons.");
       return { success: true };
     }
@@ -66,7 +72,7 @@ export const createTransactionAction = async (formData: FormData) => {
     return { success: false };
   }
 
-  revalidatePath("/");
+  revalidateTransactionViews();
   return { success: true };
 };
 
@@ -88,7 +94,7 @@ export const updateTransactionAction = async (formData: FormData) => {
 
   await supabase.from("transactions").update(toTransactionUpdate(sanitizedInput)).eq("id", id);
 
-  revalidatePath("/");
+  revalidateTransactionViews();
 };
 
 export const updateTransactionFieldAction = async (formData: FormData) => {
@@ -150,9 +156,14 @@ export const updateTransactionFieldAction = async (formData: FormData) => {
     patch = { [column]: nextValue, quantity_sold: quantityBought };
   }
 
-  await supabase.from("transactions").update(patch).eq("id", id);
+  const { error } = await supabase.from("transactions").update(patch).eq("id", id);
 
-  revalidatePath("/");
+  if (error) {
+    console.error("updateTransactionFieldAction update failed", error);
+    return;
+  }
+
+  revalidateTransactionViews();
 };
 
 export const deleteTransactionAction = async (formData: FormData) => {
@@ -165,5 +176,5 @@ export const deleteTransactionAction = async (formData: FormData) => {
 
   await supabase.from("transactions").delete().eq("id", id);
 
-  revalidatePath("/");
+  revalidateTransactionViews();
 };
