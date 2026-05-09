@@ -48,7 +48,7 @@ export const InlineTransactionField = ({
         <input
           aria-label={ariaLabel}
           className={cn(
-            "h-7 min-w-0 max-w-full rounded-md border border-transparent bg-transparent py-1 text-xs font-medium text-foreground outline-none transition focus:border-primary focus:bg-surface-soft",
+            "h-6 min-w-0 max-w-full rounded-md border border-transparent bg-transparent py-0.5 text-[0.7rem] font-medium text-foreground outline-none transition focus:border-primary focus:bg-surface-soft md:h-7 md:py-1 md:text-xs",
             (kind === "text" || fill) && "w-full truncate",
             kind === "number" && "px-2 text-right tabular-nums",
             kind === "kamas" && "px-1 text-right tabular-nums",
@@ -67,7 +67,7 @@ export const InlineTransactionField = ({
           style={adaptiveWidth ? { width: adaptiveWidth } : undefined}
           type={kind === "text" ? "text" : "number"}
         />
-        {kind === "kamas" ? <KamasIcon className="h-3 w-3" /> : null}
+        {kind === "kamas" ? <KamasIcon className="h-2.5 w-2.5 md:h-3 md:w-3" /> : null}
       </span>
     </form>
   );
@@ -93,7 +93,7 @@ export const InlinePackType = ({ id, field, value, ariaLabel, className, wrapper
       <select
         aria-label={ariaLabel}
         className={cn(
-          "h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-semibold text-foreground outline-none focus:border-primary",
+          "h-6 w-full rounded-md border border-border bg-surface-soft px-1 text-[0.72rem] font-semibold text-foreground outline-none focus:border-primary md:h-7 md:px-2 md:text-xs",
           className
         )}
         defaultValue={value}
@@ -130,7 +130,7 @@ export const InlineTransactionStatus = ({ id, value, className, wrapperClassName
       <select
         aria-label="Statut"
         className={cn(
-          "h-7 w-full rounded-md border border-border bg-surface-soft px-2 text-xs font-medium text-foreground outline-none focus:border-primary",
+          "h-6 w-full rounded-md border border-border bg-surface-soft px-1.5 text-[0.72rem] font-medium text-foreground outline-none focus:border-primary md:h-7 md:px-2 md:text-xs",
           className
         )}
         defaultValue={value}

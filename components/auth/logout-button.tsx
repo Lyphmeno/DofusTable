@@ -17,11 +17,11 @@ export const LogoutButton = () => {
   return (
     <button
       aria-label="Se deconnecter"
-      className="rounded-md border border-border bg-surface p-2 text-muted-foreground"
+      className="rounded-md border border-border bg-surface p-1.5 text-muted-foreground md:p-2"
       onClick={handleLogout}
       type="button"
     >
-      <LogOut size="1.125rem" />
+      <LogOut className="h-4 w-4 md:h-[1.125rem] md:w-[1.125rem]" />
     </button>
   );
 };

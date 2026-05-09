@@ -43,9 +43,9 @@ const packLabels: Record<PackType, string> = {
 };
 
 const fieldClassName =
-  "mt-[0.35rem] h-12 w-full rounded-[0.65rem] border border-border bg-input px-[0.62rem] text-[0.95rem] text-foreground outline-none transition focus:border-primary focus:bg-surface-soft";
+  "mt-[0.25rem] h-10 w-full rounded-[0.55rem] border border-border bg-input px-[0.5rem] text-[0.82rem] text-foreground outline-none transition focus:border-primary focus:bg-surface-soft md:mt-[0.35rem] md:h-12 md:rounded-[0.65rem] md:px-[0.62rem] md:text-[0.95rem]";
 
-const labelClassName = "text-[0.78rem] font-medium text-muted-foreground";
+const labelClassName = "text-[0.68rem] font-medium text-muted-foreground md:text-[0.78rem]";
 
 const toNumber = (value: string) => {
   const numberValue = Number(value);
@@ -72,12 +72,12 @@ const formatRoi = (value: number) => {
 
 export const FormSection = ({ children, icon, title }: FormSectionProps) => {
   return (
-    <section className="rounded-[0.85rem] border border-border bg-surface-soft/70 p-[0.75rem]">
-      <div className="mb-[0.55rem] flex items-center gap-[0.5rem]">
-        <span className="flex h-[1.55rem] w-[1.55rem] items-center justify-center rounded-[0.55rem] bg-success/10 text-success">
+    <section className="rounded-[0.65rem] border border-border bg-surface-soft/70 p-[0.55rem] md:rounded-[0.85rem] md:p-[0.75rem]">
+      <div className="mb-[0.4rem] flex items-center gap-[0.4rem] md:mb-[0.55rem] md:gap-[0.5rem]">
+        <span className="flex h-[1.35rem] w-[1.35rem] items-center justify-center rounded-[0.45rem] bg-success/10 text-success md:h-[1.55rem] md:w-[1.55rem] md:rounded-[0.55rem]">
           {icon}
         </span>
-        <h3 className="text-[0.9rem] font-semibold text-foreground">{title}</h3>
+        <h3 className="text-[0.8rem] font-semibold text-foreground md:text-[0.9rem]">{title}</h3>
       </div>
       {children}
     </section>
@@ -123,7 +123,7 @@ export const PackSelect = ({ label, name, onChange, value }: PackSelectProps) =>
 
 export const UnitPreview = ({ value }: { value: number }) => {
   return (
-    <div className="mt-[0.55rem] rounded-[0.65rem] bg-surface p-[0.55rem] text-[0.82rem] font-medium text-muted-foreground">
+    <div className="mt-[0.4rem] rounded-[0.55rem] bg-surface p-[0.4rem] text-[0.72rem] font-medium text-muted-foreground md:mt-[0.55rem] md:rounded-[0.65rem] md:p-[0.55rem] md:text-[0.82rem]">
       = <span className="tabular-nums text-foreground">{formatKamas(value)}</span> K / Lot de 1
     </div>
   );
@@ -131,9 +131,9 @@ export const UnitPreview = ({ value }: { value: number }) => {
 
 export const SummaryRow = ({ label, toneClassName, value }: { label: string; toneClassName?: string; value: ReactNode }) => {
   return (
-    <div className="flex min-w-0 items-center justify-between gap-[0.75rem] rounded-[0.65rem] bg-surface-soft p-[0.55rem]">
-      <span className="min-w-0 text-[0.78rem] text-muted">{label}</span>
-      <span className={`shrink-0 text-right text-[0.88rem] font-semibold tabular-nums ${toneClassName ?? "text-foreground"}`}>{value}</span>
+    <div className="flex min-w-0 items-center justify-between gap-[0.5rem] rounded-[0.55rem] bg-surface-soft p-[0.4rem] md:gap-[0.75rem] md:rounded-[0.65rem] md:p-[0.55rem]">
+      <span className="min-w-0 text-[0.68rem] text-muted md:text-[0.78rem]">{label}</span>
+      <span className={`shrink-0 text-right text-[0.78rem] font-semibold tabular-nums md:text-[0.88rem] ${toneClassName ?? "text-foreground"}`}>{value}</span>
     </div>
   );
 };
@@ -225,23 +225,23 @@ export const TransactionForm = () => {
   const profitToneClassName = getToneClassName(preview.profit);
 
   return (
-    <form action={handleCreateTransaction} className="rounded-[1rem] border border-border bg-surface p-[0.9rem] shadow-soft" ref={formRef}>
+    <form action={handleCreateTransaction} className="rounded-[0.75rem] border border-border bg-surface p-[0.6rem] shadow-soft md:rounded-[1rem] md:p-[0.9rem]" ref={formRef}>
       <input name="itemId" type="hidden" value={selectedItem?.id ?? ""} />
       <input name="itemIconUrl" type="hidden" value={selectedItem?.iconUrl ?? ""} />
 
-      <div className="mb-[0.75rem] flex items-center justify-between">
+      <div className="mb-[0.5rem] flex items-center justify-between md:mb-[0.75rem]">
         <div>
-          <h2 className="text-[1rem] font-semibold">Nouvel achat</h2>
-          <p className="mt-[0.15rem] text-[0.78rem] text-muted">Statut initial : en vente</p>
+          <h2 className="text-[0.9rem] font-semibold md:text-[1rem]">Nouvel achat</h2>
+          <p className="mt-[0.1rem] text-[0.68rem] text-muted md:mt-[0.15rem] md:text-[0.78rem]">Statut initial : en vente</p>
         </div>
-        <KamasIcon className="h-[1.55rem] w-[1.55rem]" />
+        <KamasIcon className="h-[1.25rem] w-[1.25rem] md:h-[1.55rem] md:w-[1.55rem]" />
       </div>
 
-      <div className="grid gap-[0.7rem] lg:grid-cols-2">
-        <FormSection icon={<Package size="0.9rem" />} title="Item">
-          <div className="grid items-end gap-[0.7rem] sm:grid-cols-[minmax(0,1fr)_7.5rem]">
+      <div className="grid gap-[0.5rem] md:gap-[0.7rem] lg:grid-cols-2">
+        <FormSection icon={<Package size="0.8rem" />} title="Item">
+          <div className="grid items-end gap-[0.5rem] sm:grid-cols-[minmax(0,1fr)_7.5rem] md:gap-[0.7rem]">
             <ItemCombobox
-              inputClassName="mt-[0.35rem] h-12 rounded-[0.65rem] py-0 pl-8 pr-[0.62rem] text-[0.95rem]"
+              inputClassName="mt-[0.25rem] h-10 rounded-[0.55rem] py-0 pl-7 pr-[0.5rem] text-[0.82rem] md:mt-[0.35rem] md:h-12 md:rounded-[0.65rem] md:pl-8 md:pr-[0.62rem] md:text-[0.95rem]"
               key={formResetKey}
               label="Nom de l'item"
               labelClassName={labelClassName}
@@ -260,8 +260,8 @@ export const TransactionForm = () => {
         </FormSection>
 
         <div className="order-last lg:order-none">
-          <FormSection icon={<ReceiptText size="0.9rem" />} title="Resume">
-            <div className="grid gap-[0.45rem] sm:grid-cols-2">
+          <FormSection icon={<ReceiptText size="0.8rem" />} title="Resume">
+            <div className="grid gap-[0.35rem] sm:grid-cols-2 md:gap-[0.45rem]">
               <SummaryRow label="Investi" value={<KamasValue value={preview.totalBuyPrice} />} />
               <SummaryRow label="Revente estimee" value={<KamasValue value={preview.totalSellPrice} />} />
               <SummaryRow label="Benefice" toneClassName={profitToneClassName} value={<KamasValue value={preview.profit} />} />
@@ -270,16 +270,16 @@ export const TransactionForm = () => {
           </FormSection>
         </div>
 
-        <FormSection icon={<ShoppingBag size="0.9rem" />} title="Achat">
-          <div className="grid gap-[0.7rem] sm:grid-cols-2">
+        <FormSection icon={<ShoppingBag size="0.8rem" />} title="Achat">
+          <div className="grid gap-[0.5rem] sm:grid-cols-2 md:gap-[0.7rem]">
             <PackSelect label="Type de lot achat" name="buyPackType" onChange={handlePackChange} value={packs.buyPackType} />
             <NumberField label="Prix du lot achete" name="buyPackPrice" onChange={handleNumberChange} value={numbers.buyPackPrice} />
           </div>
           <UnitPreview value={preview.buyUnitPrice} />
         </FormSection>
 
-        <FormSection icon={<TrendingUp size="0.9rem" />} title="Revente">
-          <div className="grid gap-[0.7rem] sm:grid-cols-2">
+        <FormSection icon={<TrendingUp size="0.8rem" />} title="Revente">
+          <div className="grid gap-[0.5rem] sm:grid-cols-2 md:gap-[0.7rem]">
             <PackSelect label="Type de lot revente" name="sellPackType" onChange={handlePackChange} value={packs.sellPackType} />
             <NumberField label="Prix de revente estime du lot" name="sellPackPrice" onChange={handleNumberChange} value={numbers.sellPackPrice} />
           </div>
@@ -288,11 +288,11 @@ export const TransactionForm = () => {
       </div>
 
       <button
-        className="mt-[0.75rem] flex w-full items-center justify-center gap-[0.5rem] rounded-[0.75rem] bg-primary p-[0.7rem] font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-[0.55rem] flex w-full items-center justify-center gap-[0.4rem] rounded-[0.65rem] bg-primary p-[0.55rem] text-[0.9rem] font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70 md:mt-[0.75rem] md:gap-[0.5rem] md:rounded-[0.75rem] md:p-[0.7rem] md:text-base"
         disabled={isSubmitting}
         type="submit"
       >
-        <Plus size="1.125rem" aria-hidden="true" />
+        <Plus size="1rem" aria-hidden="true" />
         {isSubmitting ? "Ajout..." : "Ajouter"}
       </button>
     </form>

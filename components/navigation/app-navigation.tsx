@@ -42,7 +42,7 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
   return (
     <nav
       className={cn(
-        variant === "mobile" && "mx-auto w-full max-w-[min(100%,16rem)] border-t border-border bg-background p-[0.4rem] md:hidden",
+        variant === "mobile" && "mx-auto w-full max-w-[min(100%,15rem)] border-t border-border bg-background p-[0.25rem] md:hidden",
         variant === "desktop" && "hidden h-full min-w-0 border-r border-border bg-surface/70 p-[0.75rem] md:flex md:flex-col"
       )}
     >
@@ -52,7 +52,7 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
         </div>
       ) : null}
 
-      <div className={cn(variant === "mobile" && "grid grid-cols-3 gap-[0.4rem]", variant === "desktop" && "space-y-[0.35rem]")}>
+      <div className={cn(variant === "mobile" && "grid grid-cols-3 gap-[0.3rem]", variant === "desktop" && "space-y-[0.35rem]")}>
         {navItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = activeView === item.view;
@@ -68,7 +68,7 @@ export const AppNavigation = ({ activeView, variant }: AppNavigationProps) => {
               <Link
                 className={cn(
                   "flex min-w-0 items-center justify-center gap-[0.45rem] rounded-[0.55rem] border p-[0.55rem] text-[0.8125rem] font-medium transition hover:bg-surface-strong",
-                  variant === "mobile" && "p-[0.45rem] text-[0.75rem]",
+                  variant === "mobile" && "p-[0.35rem] text-[0.7rem]",
                   variant === "desktop" && "justify-start",
                   isActive
                     ? "border-primary bg-primary text-primary-foreground hover:bg-primary"

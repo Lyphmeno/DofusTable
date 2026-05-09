@@ -13,8 +13,8 @@ const createdDateFormatter = new Intl.DateTimeFormat("fr-FR", {
   month: "2-digit"
 });
 
-const kamaIconClassName = "h-3 w-3";
-const compactPackSelectClassName = "h-6 w-[2.6rem] px-1 text-[0.7rem]";
+const kamaIconClassName = "h-2.5 w-2.5 md:h-3 md:w-3";
+const compactPackSelectClassName = "h-6 w-[4.25rem] px-2 text-[0.72rem] md:h-7 md:text-xs";
 const statusSortOrder: Record<Transaction["status"], number> = {
   selling: 0,
   sold: 1,
@@ -30,7 +30,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
         {row.original.itemIconUrl ? (
           <img
             alt=""
-            className="h-5 w-5 shrink-0 rounded-sm object-contain"
+            className="h-4 w-4 shrink-0 rounded-sm object-contain md:h-5 md:w-5"
             height={20}
             loading="lazy"
             src={row.original.itemIconUrl}
@@ -56,13 +56,13 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           field="buyPackType"
           id={row.original.id}
           value={row.original.buyPackType}
-          wrapperClassName="min-w-0 max-w-full"
+          wrapperClassName="min-w-[4.25rem]"
         />
       </div>
     ),
-    size: 4,
-    minSize: 4,
-    maxSize: 5,
+    size: 6.5,
+    minSize: 6.5,
+    maxSize: 7,
     sortingFn: (a, b) => packSizes[a.original.buyPackType] - packSizes[b.original.buyPackType]
   },
   {
@@ -115,12 +115,12 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           field="sellPackType"
           id={row.original.id}
           value={row.original.sellPackType}
-          wrapperClassName="min-w-0 max-w-full"
+          wrapperClassName="min-w-[4.25rem]"
         />
       </div>
     ),
-    size: 4,
-    minSize: 6,
+    size: 6.5,
+    minSize: 6.5,
     maxSize: 7,
     sortingFn: (a, b) => packSizes[a.original.sellPackType] - packSizes[b.original.sellPackType]
   },
@@ -218,14 +218,14 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     header: "Statut",
     cell: ({ row }) => (
       <InlineTransactionStatus
-        className="h-6 text-[0.7rem]"
+        className="h-6 min-w-[6.25rem] px-2 text-[0.72rem] md:h-7 md:text-xs"
         id={row.original.id}
         value={row.original.status}
-        wrapperClassName="ml-auto min-w-0 max-w-full"
+        wrapperClassName="ml-auto min-w-[6.25rem]"
       />
     ),
-    size: 7,
-    minSize: 7,
+    size: 9,
+    minSize: 9,
     sortingFn: (a, b) => statusSortOrder[a.original.status] - statusSortOrder[b.original.status]
   },
   {

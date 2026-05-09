@@ -8,7 +8,7 @@ type TableViewProps = {
 
 export const TableView = ({ transactions }: TableViewProps) => {
   return (
-    <div className="grid min-h-full min-w-0 gap-[0.5rem] md:h-full md:grid-rows-[auto_1fr] md:overflow-hidden">
+    <div className="grid h-full min-h-0 min-w-0 grid-rows-[auto_minmax(0,1fr)] content-start gap-[0.3rem] md:gap-[0.5rem] md:overflow-hidden">
       <SummaryMetrics transactions={transactions} />
 
       <section className="min-h-0 min-w-0">

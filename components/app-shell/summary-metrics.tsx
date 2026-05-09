@@ -23,8 +23,8 @@ export const SummaryMetrics = ({ transactions }: SummaryMetricsProps) => {
   const summary = summarizeTransactions(transactions);
 
   return (
-    <section className="grid min-w-0 grid-cols-1 gap-[0.5rem] md:grid-cols-2">
-      <MetricCard label="Bénéfice en attente" value={<KamasValue value={summary.pendingProfit} />} tone={getProfitTone(summary.pendingProfit)} />
+    <section className="grid min-w-0 grid-cols-2 items-start gap-[0.3rem] self-start md:gap-[0.5rem]">
+      <MetricCard label="Bénéfice en attente" value={<KamasValue value={summary.pendingProfit} />} tone="warning" />
       <MetricCard label="Bénéfice réel" value={<KamasValue value={summary.realizedProfit} />} tone={getProfitTone(summary.realizedProfit)} />
     </section>
   );

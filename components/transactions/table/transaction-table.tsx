@@ -1,6 +1,5 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable, type SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { transactionColumns } from "@/components/transactions/table/transaction-columns";
@@ -23,18 +22,18 @@ const getCellPaddingClassName = (columnId: string) => {
   }
 
   if (separatedColumnIds.has(columnId)) {
-    return compactColumnIds.has(columnId) ? "pl-1 pr-3" : "pl-2 pr-3";
+    return compactColumnIds.has(columnId) ? "pl-0.5 pr-2 md:pl-1 md:pr-3" : "pl-1 pr-2 md:pl-2 md:pr-3";
   }
 
   if (afterSeparatorColumnIds.has(columnId)) {
-    return compactColumnIds.has(columnId) ? "pl-3 pr-1" : "pl-3 pr-2";
+    return compactColumnIds.has(columnId) ? "pl-2 pr-0.5 md:pl-3 md:pr-1" : "pl-2 pr-1 md:pl-3 md:pr-2";
   }
 
   if (compactColumnIds.has(columnId)) {
-    return "px-1";
+    return "px-0.5 md:px-1";
   }
 
-  return "px-2";
+  return "px-1 md:px-2";
 };
 
 const getColumnSeparatorClassName = (columnId: string) => {
@@ -53,21 +52,10 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
   });
 
   return (
-    <section className="h-full min-h-0 overflow-y-auto pb-4">
-      <div className="mb-2 flex justify-end md:mb-3">
-        <button
-          className="inline-flex h-8 items-center gap-2 rounded-md border border-border bg-surface-soft px-3 text-xs font-medium text-muted-foreground transition hover:bg-surface-strong"
-          onClick={() => setSorting([{ id: "createdAt", desc: true }])}
-          type="button"
-        >
-          <RotateCcw size="0.875rem" />
-          Reset
-        </button>
-      </div>
-
-      <div className="max-w-full overflow-hidden rounded-lg border border-border bg-surface shadow-soft">
+    <section className="h-full min-h-0 overflow-y-auto pb-1.5 md:pb-4">
+      <div className="max-w-full overflow-hidden rounded-md border border-border bg-surface shadow-soft md:rounded-lg">
         <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-[70rem] table-fixed border-collapse xl:min-w-full">
+          <table className="w-full min-w-[68rem] table-fixed border-collapse md:min-w-[74rem] xl:min-w-full">
             <colgroup>
               {table.getAllLeafColumns().map((column) => (
                 <col key={column.id} style={{ width: `${column.getSize()}%` }} />
@@ -88,7 +76,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                     return (
                       <th
                         className={cn(
-                          "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-[0.7rem] font-medium uppercase tracking-normal text-muted-foreground",
+                          "overflow-hidden text-ellipsis whitespace-nowrap py-1 text-[0.58rem] font-medium uppercase tracking-normal text-muted-foreground md:py-2 md:text-[0.7rem]",
                           getCellPaddingClassName(header.column.id),
                           getColumnSeparatorClassName(header.column.id),
                           alignClassName
@@ -124,13 +112,13 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
             <tbody>
               {table.getRowModel().rows.length === 0 ? (
                 <tr>
-                  <td className="px-2 py-6 text-center text-sm text-muted" colSpan={table.getAllLeafColumns().length}>
+                  <td className="px-2 py-3 text-center text-[0.7rem] text-muted md:py-6 md:text-sm" colSpan={table.getAllLeafColumns().length}>
                     Aucune transaction pour le moment.
                   </td>
                 </tr>
               ) : null}
               {table.getRowModel().rows.map((row) => (
-                <tr className="h-10 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60" key={row.id}>
+                <tr className="h-7 border-b border-border-soft transition last:border-b-0 hover:bg-surface-soft/60 md:h-10" key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     const alignClassName = rightAlignedColumnIds.has(cell.column.id)
                       ? "text-right"
@@ -141,7 +129,7 @@ export const TransactionTable = ({ transactions }: TransactionTableProps) => {
                     return (
                       <td
                         className={cn(
-                          "overflow-hidden text-ellipsis whitespace-nowrap py-2 text-xs text-foreground",
+                          "overflow-hidden text-ellipsis whitespace-nowrap py-1 text-[0.65rem] text-foreground md:py-2 md:text-xs",
                           getCellPaddingClassName(cell.column.id),
                           getColumnSeparatorClassName(cell.column.id),
                           alignClassName

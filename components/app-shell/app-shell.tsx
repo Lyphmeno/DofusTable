@@ -21,11 +21,11 @@ export const AppShell = ({ transactions = [], activeView }: AppShellProps) => {
     <main className="grid h-screen w-full min-w-0 grid-rows-[1fr_auto] overflow-hidden md:grid-cols-[9.5rem_1fr] md:grid-rows-1 lg:grid-cols-[10.5rem_1fr]">
       <AppNavigation activeView={activeView} variant="desktop" />
 
-      <section className="grid h-full min-h-0 min-w-0 grid-rows-[auto_1fr] overflow-hidden p-[0.5rem] md:p-[0.75rem_0.75rem_0.5rem]">
-        <header className="mb-[0.25rem] flex items-center justify-between md:mb-[0.5rem]">
+      <section className="grid h-full min-h-0 min-w-0 grid-rows-[auto_1fr] overflow-hidden p-[0.3rem] md:p-[0.75rem_0.75rem_0.5rem]">
+        <header className="mb-[0.15rem] flex items-center justify-between md:mb-[0.5rem]">
           <div>
-            <p className="text-[0.75rem] font-medium text-primary md:hidden">Lyphus</p>
-            <h1 className="text-[1.125rem] font-semibold tracking-normal md:text-[1.25rem]">
+            <p className="text-[0.62rem] font-medium text-primary md:hidden">Lyphus</p>
+            <h1 className="text-[0.92rem] font-semibold tracking-normal md:text-[1.25rem]">
               {pageTitles[activeView]}
             </h1>
           </div>
