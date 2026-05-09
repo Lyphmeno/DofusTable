@@ -164,7 +164,8 @@ export const TransactionForm = () => {
     const sellUnitPrice = sellPackPrice / sellPackSize;
     const totalBuyPrice = buyUnitPrice * quantityBought;
     const totalSellPrice = sellUnitPrice * quantityBought;
-    const profit = totalSellPrice - totalBuyPrice;
+    const listingTax = totalSellPrice * 0.02;
+    const profit = totalSellPrice - totalBuyPrice - listingTax;
     const roi = totalBuyPrice > 0 ? (profit / totalBuyPrice) * 100 : 0;
 
     return {

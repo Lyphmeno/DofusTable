@@ -16,20 +16,40 @@ const pageTitles: Record<AppView, string> = {
   table: "Tableau"
 };
 
+const pageCategoryLabels: Partial<Record<AppView, string>> = {
+  add: "Achat/Revente",
+  table: "Achat/Revente"
+};
+
 export const AppShell = ({ transactions = [], activeView }: AppShellProps) => {
+  const isHome = activeView === "home";
+
   return (
     <main className="grid h-screen w-full min-w-0 grid-rows-[1fr_auto] overflow-hidden md:grid-cols-[9.5rem_1fr] md:grid-rows-1 lg:grid-cols-[10.5rem_1fr]">
       <AppNavigation activeView={activeView} variant="desktop" />
 
       <section className="grid h-full min-h-0 min-w-0 grid-rows-[auto_1fr] overflow-hidden p-[0.3rem] md:p-[0.75rem_0.75rem_0.5rem]">
-        <header className="mb-[0.15rem] flex items-center justify-between md:mb-[0.5rem]">
-          <div>
-            <p className="text-[0.62rem] font-medium text-primary md:hidden">Lyphus</p>
-            <h1 className="text-[0.92rem] font-semibold tracking-normal md:text-[1.25rem]">
+        <header className="mb-[0.15rem] grid grid-cols-[2rem_1fr_2rem] items-center md:mb-[0.5rem] md:flex md:justify-between">
+          <div className="hidden md:block">
+            <h1 className="text-[1.25rem] font-semibold tracking-normal">
               {pageTitles[activeView]}
             </h1>
           </div>
-          <LogoutButton />
+          <div className="col-start-2 min-w-0 text-center md:hidden">
+            {isHome ? (
+              null
+            ) : (
+              <>
+                <p className="truncate text-[0.68rem] font-semibold text-primary">{pageCategoryLabels[activeView]}</p>
+                <h1 className="truncate text-[1.25rem] font-bold leading-tight tracking-normal text-foreground">
+                  {pageTitles[activeView]}
+                </h1>
+              </>
+            )}
+          </div>
+          <div className="col-start-3 justify-self-end">
+            <LogoutButton />
+          </div>
         </header>
 
         <div className="min-h-0 overflow-y-auto overflow-x-hidden">

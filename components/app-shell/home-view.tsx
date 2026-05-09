@@ -4,14 +4,7 @@ import { ArrowRight, PlusCircle, Repeat2, Table2 } from "lucide-react";
 export const HomeView = () => {
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-[0.6rem] md:gap-[0.75rem]">
-      <section className="rounded-[0.75rem] border border-border bg-surface p-[0.85rem] shadow-soft md:rounded-[1rem] md:p-[1.1rem]">
-        <p className="font-proclamate text-[1.4rem] font-medium text-primary md:text-[1.75rem]">Lyphus</p>
-        <h2 className="mt-1 text-[1.15rem] font-semibold text-foreground md:text-[1.45rem]">Bienvenue sur Lyphus</h2>
-        <p className="mt-2 max-w-3xl text-[0.82rem] leading-5 text-muted-foreground md:text-sm md:leading-6">
-          Lyphus regroupe des outils pensés pour suivre, organiser et optimiser tes activités en jeu. Pour le moment, le module
-          Achat/Revente permet de suivre tes transactions, tes taxes et tes bénéfices.
-        </p>
-      </section>
+      <h2 className="text-center font-proclamate text-[2.8rem] font-medium leading-none text-primary md:hidden">Lyphus</h2>
 
       <section className="grid gap-[0.45rem] md:gap-[0.6rem]">
         <div className="flex items-center justify-between">
