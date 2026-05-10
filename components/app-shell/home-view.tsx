@@ -34,7 +34,6 @@ export const HomeView = () => {
               <Table2 className="h-3.5 w-3.5" />
               Tableau
             </Link>
-            <ArrowRight className="hidden h-4 w-4 text-primary transition group-hover:translate-x-0.5 md:block" />
           </span>
         </article>
       </section>

@@ -1,8 +1,8 @@
 import { AppShell } from "@/components/app-shell/app-shell";
-import { requireAllowedUser } from "@/lib/auth/require-allowed-user";
+import { requireAuthenticatedUser } from "@/lib/auth/require-authenticated-user";
 
 export default async function ParametresPage() {
-  await requireAllowedUser();
+  const { profile } = await requireAuthenticatedUser();
 
-  return <AppShell activeView="settings" />;
+  return <AppShell activeView="settings" profile={profile} />;
 }

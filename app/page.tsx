@@ -1,5 +1,5 @@
 import { AppShell } from "@/components/app-shell/app-shell";
-import { requireAllowedUser } from "@/lib/auth/require-allowed-user";
+import { requireAuthenticatedUser } from "@/lib/auth/require-authenticated-user";
 import { redirect } from "next/navigation";
 
 type HomePageProps = {
@@ -17,7 +17,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     redirect("/ajouter");
   }
 
-  await requireAllowedUser();
+  const { profile } = await requireAuthenticatedUser();
 
-  return <AppShell activeView="home" />;
+  return <AppShell activeView="home" profile={profile} />;
 }

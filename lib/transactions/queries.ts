@@ -4,10 +4,11 @@ import { mapTransactionRow, type TransactionRow } from "@/lib/transactions/mappe
 
 type SupabaseServerClient = ReturnType<typeof createSupabaseServerClient>;
 
-export const getTransactions = async (supabase: SupabaseServerClient) => {
+export const getTransactions = async (supabase: SupabaseServerClient, userId: string) => {
   const { data } = await supabase
     .from("transactions")
     .select("*")
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
   return ((data ?? []) as TransactionRow[]).map((row) => {

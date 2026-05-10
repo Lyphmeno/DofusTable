@@ -1,10 +1,10 @@
 import { AppShell } from "@/components/app-shell/app-shell";
-import { requireAllowedUser } from "@/lib/auth/require-allowed-user";
+import { requireAuthenticatedUser } from "@/lib/auth/require-authenticated-user";
 import { getTransactions } from "@/lib/transactions/queries";
 
 export default async function TableauPage() {
-  const { supabase } = await requireAllowedUser();
-  const transactions = await getTransactions(supabase);
+  const { supabase, user, profile } = await requireAuthenticatedUser();
+  const transactions = await getTransactions(supabase, user.id);
 
-  return <AppShell activeView="table" transactions={transactions} />;
+  return <AppShell activeView="table" profile={profile} transactions={transactions} />;
 }

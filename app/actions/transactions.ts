@@ -1,19 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { requireAuthenticatedUser } from "@/lib/auth/require-authenticated-user";
 import { parseTransactionFormData, toTransactionInsert, toTransactionUpdate } from "@/lib/transactions/form-data";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const getAuthenticatedUserId = async () => {
-  const supabase = createSupabaseServerClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-
-  if (!user?.id) {
-    redirect("/login");
-  }
+  const { supabase, user } = await requireAuthenticatedUser();
 
   return {
     supabase,
@@ -77,7 +69,7 @@ export const createTransactionAction = async (formData: FormData) => {
 };
 
 export const updateTransactionAction = async (formData: FormData) => {
-  const { supabase } = await getAuthenticatedUserId();
+  const { supabase, userId } = await getAuthenticatedUserId();
   const id = formData.get("id");
   const input = parseTransactionFormData(formData);
   const status = input.status;
@@ -92,13 +84,13 @@ export const updateTransactionAction = async (formData: FormData) => {
     return;
   }
 
-  await supabase.from("transactions").update(toTransactionUpdate(sanitizedInput)).eq("id", id);
+  await supabase.from("transactions").update(toTransactionUpdate(sanitizedInput)).eq("id", id).eq("user_id", userId);
 
   revalidateTransactionViews();
 };
 
 export const updateTransactionFieldAction = async (formData: FormData) => {
-  const { supabase } = await getAuthenticatedUserId();
+  const { supabase, userId } = await getAuthenticatedUserId();
   const id = formData.get("id");
   const field = formData.get("field");
   const value = formData.get("value");
@@ -151,12 +143,12 @@ export const updateTransactionFieldAction = async (formData: FormData) => {
   }
 
   if (field === "status" && value === "sold") {
-    const { data } = await supabase.from("transactions").select("quantity_bought").eq("id", id).maybeSingle();
+    const { data } = await supabase.from("transactions").select("quantity_bought").eq("id", id).eq("user_id", userId).maybeSingle();
     const quantityBought = Number(data?.quantity_bought ?? 0);
     patch = { [column]: nextValue, quantity_sold: quantityBought };
   }
 
-  const { error } = await supabase.from("transactions").update(patch).eq("id", id);
+  const { error } = await supabase.from("transactions").update(patch).eq("id", id).eq("user_id", userId);
 
   if (error) {
     console.error("updateTransactionFieldAction update failed", error);
@@ -167,14 +159,14 @@ export const updateTransactionFieldAction = async (formData: FormData) => {
 };
 
 export const deleteTransactionAction = async (formData: FormData) => {
-  const { supabase } = await getAuthenticatedUserId();
+  const { supabase, userId } = await getAuthenticatedUserId();
   const id = formData.get("id");
 
   if (typeof id !== "string" || !id) {
     return;
   }
 
-  await supabase.from("transactions").delete().eq("id", id);
+  await supabase.from("transactions").delete().eq("id", id).eq("user_id", userId);
 
   revalidateTransactionViews();
 };

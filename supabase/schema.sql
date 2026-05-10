@@ -3,10 +3,63 @@ create extension if not exists "pgcrypto";
 create type public.pack_type as enum ('unit', 'ten', 'hundred');
 create type public.transaction_status as enum ('stock', 'selling', 'sold', 'unsold');
 
-create table public.allowed_users (
-  email text primary key,
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  username text unique not null check (username ~ '^[a-z0-9_-]{3,24}$'),
   created_at timestamptz not null default now()
 );
+
+create or replace function public.normalize_username(candidate text)
+returns text
+language sql
+immutable
+as $$
+  select lower(trim(candidate));
+$$;
+
+create or replace function public.is_username_available(candidate text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select coalesce(public.normalize_username(candidate) ~ '^[a-z0-9_-]{3,24}$', false)
+    and not exists (
+      select 1
+      from public.profiles
+      where username = public.normalize_username(candidate)
+    );
+$$;
+
+grant execute on function public.is_username_available(text) to anon, authenticated;
+
+create or replace function public.create_profile_for_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  requested_username text;
+begin
+  requested_username := public.normalize_username(new.raw_user_meta_data ->> 'username');
+
+  if requested_username is null or requested_username !~ '^[a-z0-9_-]{3,24}$' then
+    raise exception 'Invalid username';
+  end if;
+
+  insert into public.profiles (id, username)
+  values (new.id, requested_username);
+
+  return new;
+end;
+$$;
+
+create trigger create_profile_after_auth_user_insert
+after insert on auth.users
+for each row
+execute function public.create_profile_for_new_user();
 
 create table public.transactions (
   id uuid primary key default gen_random_uuid(),
@@ -46,76 +99,55 @@ before update on public.transactions
 for each row
 execute function public.touch_updated_at();
 
-alter table public.allowed_users enable row level security;
+alter table public.profiles enable row level security;
 alter table public.transactions enable row level security;
 
-create policy "Allowed users can read themselves"
-on public.allowed_users
+create policy "Users can read their own profile"
+on public.profiles
 for select
 to authenticated
-using (email = auth.jwt() ->> 'email');
+using (id = auth.uid());
 
-create policy "Only allowed authenticated users can read transactions"
+create policy "Users can insert their own profile"
+on public.profiles
+for insert
+to authenticated
+with check (id = auth.uid());
+
+create policy "Users can update their own profile"
+on public.profiles
+for update
+to authenticated
+using (id = auth.uid())
+with check (id = auth.uid());
+
+create policy "Users can delete their own profile"
+on public.profiles
+for delete
+to authenticated
+using (id = auth.uid());
+
+create policy "Users can read their own transactions"
 on public.transactions
 for select
 to authenticated
-using (
-  user_id = auth.uid()
-  and exists (
-    select 1
-    from public.allowed_users
-    where allowed_users.email = auth.jwt() ->> 'email'
-  )
-);
+using (user_id = auth.uid());
 
-create policy "Only allowed authenticated users can insert transactions"
+create policy "Users can insert their own transactions"
 on public.transactions
 for insert
 to authenticated
-with check (
-  user_id = auth.uid()
-  and exists (
-    select 1
-    from public.allowed_users
-    where allowed_users.email = auth.jwt() ->> 'email'
-  )
-);
+with check (user_id = auth.uid());
 
-create policy "Only allowed authenticated users can update transactions"
+create policy "Users can update their own transactions"
 on public.transactions
 for update
 to authenticated
-using (
-  user_id = auth.uid()
-  and exists (
-    select 1
-    from public.allowed_users
-    where allowed_users.email = auth.jwt() ->> 'email'
-  )
-)
-with check (
-  user_id = auth.uid()
-  and exists (
-    select 1
-    from public.allowed_users
-    where allowed_users.email = auth.jwt() ->> 'email'
-  )
-);
+using (user_id = auth.uid())
+with check (user_id = auth.uid());
 
-create policy "Only allowed authenticated users can delete transactions"
+create policy "Users can delete their own transactions"
 on public.transactions
 for delete
 to authenticated
-using (
-  user_id = auth.uid()
-  and exists (
-    select 1
-    from public.allowed_users
-    where allowed_users.email = auth.jwt() ->> 'email'
-  )
-);
-
--- Replace this value with your private login email before running the migration.
-insert into public.allowed_users (email)
-values ('hugolevipro@gmail.com')
-on conflict (email) do nothing;
+using (user_id = auth.uid());

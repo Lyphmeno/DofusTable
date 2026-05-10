@@ -3,11 +3,13 @@ import { HomeView } from "@/components/app-shell/home-view";
 import { SettingsView } from "@/components/app-shell/settings-view";
 import { TableView } from "@/components/app-shell/table-view";
 import { AppNavigation, type AppView } from "@/components/navigation/app-navigation";
+import type { Profile } from "@/lib/types/profile";
 import type { Transaction } from "@/lib/types/transaction";
 
 type AppShellProps = {
   transactions?: Transaction[];
   activeView: AppView;
+  profile?: Profile | null;
 };
 
 const pageTitles: Record<AppView, string> = {
@@ -22,7 +24,7 @@ const pageCategoryLabels: Partial<Record<AppView, string>> = {
   table: "Achat/Revente"
 };
 
-export const AppShell = ({ transactions = [], activeView }: AppShellProps) => {
+export const AppShell = ({ transactions = [], activeView, profile = null }: AppShellProps) => {
   const isHome = activeView === "home";
   const isSettings = activeView === "settings";
 
@@ -61,7 +63,7 @@ export const AppShell = ({ transactions = [], activeView }: AppShellProps) => {
           ) : activeView === "add" ? (
             <AddView transactions={transactions} />
           ) : activeView === "settings" ? (
-            <SettingsView />
+            <SettingsView profile={profile} />
           ) : (
             <TableView transactions={transactions} />
           )}
